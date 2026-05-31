@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CareLink Pro - Profissionais de Saúde</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0891B2;
+            --primary-dark: #0E7490;
+            --primary-light: #06B6D4;
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --danger: #EF4444;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --bg-light: #F0FDFA;
+            --bg-white: #FFFFFF;
+            --bg-dark: #1E293B;
+            --text-dark: #1E293B;
+            --text-medium: #475569;
+            --text-light: #64748B;
+            --border: #E2E8F0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #F8FAFC;
+            color: var(--text-dark);
+            height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* App Container - Mobile First */
+        .app-container {
+            max-width: 430px;
+            margin: 0 auto;
+            height: 100vh;
+            background: var(--bg-white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        @media (min-width: 431px) {
+            body {
+                background: linear-gradient(135deg, #0891B2 0%, #0E7490 50%, #06B6D4 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+            .app-container {
+                border-radius: 28px;
+                height: 92vh;
+                max-height: 900px;
+            }
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            padding: 16px 20px;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-logo .pro-badge {
+            background: var(--accent);
+            color: var(--text-dark);
+            font-size: 0.65rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 18px;
+            height: 18px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        /* Main Content */
+        .main-content {
+            height: calc(100vh - 140px);
+            overflow-y: auto;
+            padding: 20px;
+            scroll-behavior: smooth;
+        }
+
+        @media (min-width: 431px) {
+            .main-content {
+                height: calc(92vh - 200px);
+                max-height: 700px;
+            }
+        }
+
+        /* Status Toggle */
+        .status-toggle-container {
+            background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .status-toggle-container.online {
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+            border-color: var(--secondary);
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #94A3B8;
+            transition: var(--transition);
+        }
+
+        .status-dot.online {
+            background: var(--secondary);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+            animation: glowPulse 2s infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.6); }
+        }
+
+        .toggle-switch {
+            width: 60px;
+            height: 32px;
+            background: #CBD5E1;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .toggle-switch.active {
+            background: var(--secondary);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .toggle-switch.active::after {
+            left: 31px;
+        }
+
+        /* Stats Cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .stat-value.earnings {
+            color: var(--secondary);
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-badge {
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        /* Request Card */
+        .request-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 14px;
+            border-left: 4px solid var(--primary);
+            animation: slideIn 0.4s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .request-card.urgent {
+            border-left-color: var(--danger);
+            animation: urgentPulse 2s infinite;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes urgentPulse {
+            0%, 100% { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+            50% { box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); }
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .request-time-badge {
+            background: var(--danger);
+            color: white;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            animation: countdown 1s infinite;
+        }
+
+        @keyframes countdown {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .request-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .request-chip {
+            background: var(--bg-light);
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            color: var(--text-medium);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .request-chip i {
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .request-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 12px;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-accept {
+            flex: 1;
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+            border: none;
+            border-radius: 20px;
+            padding: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 3px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-accept:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 18px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-decline {
+            width: 45px;
+            background: #FEE2E2;
+            border: none;
+            border-radius: 20px;
+            color: var(--danger);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+
+        .btn-decline:hover {
+            background: #FECACA;
+        }
+
+        /* Accepted Service Card */
+        .accepted-service-card {
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            border: 2px solid var(--secondary);
+            margin-bottom: 20px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .client-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: white;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .client-name {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .client-address {
+            font-size: 0.8rem;
+            color: var(--text-medium);
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .btn-action {
+            border-radius: 20px;
+            padding: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-action.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-action.secondary {
+            background: var(--bg-white);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-action.success {
+            background: var(--secondary);
+            color: white;
+            grid-column: span 2;
+        }
+
+        /* Wallet Card */
+        .wallet-card {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #0F172A 100%);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .wallet-balance {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .wallet-label {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            margin-bottom: 12px;
+        }
+
+        .wallet-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-wallet {
+            flex: 1;
+            border-radius: 20px;
+            padding: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-align: center;
+        }
+
+        .btn-wallet.buy {
+            background: var(--accent);
+            color: var(--text-dark);
+        }
+
+        .btn-wallet.history {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        /* Earnings List */
+        .earning-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .earning-item:hover {
+            background: var(--bg-light);
+        }
+
+        .earning-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .earning-icon.completed {
+            background: #D1FAE5;
+            color: var(--secondary);
+        }
+
+        .earning-icon.pending {
+            background: #FEF3C7;
+            color: var(--accent);
+        }
+
+        .earning-info {
+            flex: 1;
+        }
+
+        .earning-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+
+        .earning-date {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .earning-amount {
+            font-weight: 700;
+            color: var(--secondary);
+            font-size: 1rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            animation: slideUp 0.3s ease-out;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        /* Scrollbar */
+        .main-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+
+        /* Timer Circle */
+        .timer-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 4px solid var(--danger);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--danger);
+            animation: timerPulse 1s infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Responsive */
+        @media (max-width: 360px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container" id="appContainer">
+    
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="header-logo">
+                <i class="bi bi-heart-pulse-fill"></i>
+                CareLink
+                <span class="pro-badge">PRO</span>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" onclick="showNotifications()" title="Notificações">
+                    <i class="bi bi-bell-fill"></i>
+                    <span class="notification-badge" id="notificationCount">2</span>
+                </button>
+                <button class="header-btn" onclick="showProfileModal()" title="Perfil">
+                    <i class="bi bi-person-fill"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- Home Screen -->
+        <div id="homeScreen">
+            
+            <!-- Status Toggle -->
+            <div class="status-toggle-container online" id="statusContainer">
+                <div class="status-header">
+                    <div class="status-indicator">
+                        <span class="status-dot online" id="statusDot"></span>
+                        <span id="statusText">Você está online</span>
+                    </div>
+                    <button class="toggle-switch active" id="toggleSwitch" onclick="toggleStatus()"></button>
+                </div>
+                <p style="font-size: 0.8rem; color: #047857; margin: 0;">
+                    <i class="bi bi-info-circle"></i> 
+                    <span id="statusDescription">Recebendo novas solicitações na sua região</span>
+                </p>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-value earnings">R$ <span id="todayEarnings">380</span></div>
+                    <div class="stat-label">Ganhos de hoje</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value"><span id="servicesCount">2</span></div>
+                    <div class="stat-label">Atendimentos hoje</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">⭐ <span id="ratingValue">4.8</span></div>
+                    <div class="stat-label">Sua avaliação</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value"><span id="walletCredits">15</span></div>
+                    <div class="stat-label">Créditos disponíveis</div>
+                </div>
+            </div>
+
+            <!-- Wallet Quick View -->
+            <div class="wallet-card">
+                <div class="wallet-balance"><span id="quickCredits">15</span> créditos</div>
+                <div class="wallet-label">Cada serviço aceito consome 1 crédito</div>
+                <div class="wallet-actions">
+                    <button class="btn-wallet buy" onclick="buyCredits()">
+                        <i class="bi bi-plus-circle"></i> Comprar
+                    </button>
+                    <button class="btn-wallet history" onclick="showWalletHistory()">
+                        <i class="bi bi-clock-history"></i> Extrato
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Service (if any) -->
+            <div id="activeServiceContainer"></div>
+
+            <!-- Pending Requests -->
+            <h3 class="section-title">
+                Solicitações Pendentes
+                <span class="section-badge" id="pendingCount">1</span>
+            </h3>
+            <div id="pendingRequests">
+                <!-- Filled by JavaScript -->
+            </div>
+
+            <!-- Today's Schedule -->
+            <h3 class="section-title">Agenda de Hoje</h3>
+            <div id="todaySchedule">
+                <div style="text-align: center; padding: 30px; color: var(--text-light);">
+                    <i class="bi bi-calendar-check" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                    <p style="font-size: 0.9rem;">Nenhum serviço agendado para hoje</p>
+                    <p style="font-size: 0.8rem;">Fique online para receber solicitações</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Service Screen -->
+        <div id="activeServiceScreen" style="display: none;">
+            <div class="accepted-service-card">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                    <i class="bi bi-check-circle-fill" style="font-size: 1.5rem; color: var(--secondary);"></i>
+                    <span style="font-weight: 700; color: #065F46;">Serviço em Andamento</span>
+                </div>
+                
+                <div class="client-info">
+                    <div class="client-avatar" id="activeClientAvatar">MO</div>
+                    <div>
+                        <div class="client-name" id="activeClientName">Maria Oliveira</div>
+                        <div class="client-address" id="activeClientAddress">Rua das Flores, 123</div>
+                    </div>
+                </div>
+
+                <div class="request-details mb-3">
+                    <div class="request-chip" id="activeServiceType">
+                        <i class="bi bi-briefcase"></i> Plantão Domiciliar
+                    </div>
+                    <div class="request-chip" id="activeServiceTime">
+                        <i class="bi bi-clock"></i> 08:00 - 12:00
+                    </div>
+                    <div class="request-chip" id="activeServicePrice">
+                        <i class="bi bi-cash"></i> R$ 112,00
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-action primary" onclick="navigateToLocation()">
+                        <i class="bi bi-geo-alt"></i> Navegar
+                    </button>
+                    <button class="btn-action secondary" onclick="openChat()">
+                        <i class="bi bi-chat-dots"></i> Chat
+                    </button>
+                    <button class="btn-action success" onclick="checkInService()">
+                        <i class="bi bi-check-lg"></i> Cheguei ao Local
+                    </button>
+                </div>
+            </div>
+
+            <!-- Service Details -->
+            <div class="form-section" style="background: var(--bg-white); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border);">
+                <h5 style="font-weight: 700; margin-bottom: 12px;">Detalhes do Paciente</h5>
+                <div id="patientDetails">
+                    <p><strong>Paciente:</strong> João Silva (78 anos)</p>
+                    <p><strong>Condições:</strong> Mobilidade reduzida, hipertenso</p>
+                    <p><strong>Observações:</strong> Precisa de auxílio para banho e alimentação</p>
+                </div>
+            </div>
+
+            <button class="btn btn-outline-danger w-100 mt-3" onclick="cancelService()" style="border-radius: 20px;">
+                Cancelar Atendimento
+            </button>
+        </div>
+
+        <!-- Earnings Screen -->
+        <div id="earningsScreen" style="display: none;">
+            <button class="btn btn-sm btn-outline-secondary mb-3" onclick="navigateTo('home')" style="border-radius: 20px;">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </button>
+            
+            <h2 style="font-weight: 700; margin-bottom: 20px;">Meus Ganhos</h2>
+            
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-value earnings">R$ 3.840</div>
+                    <div class="stat-label">Total do Mês</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">24</div>
+                    <div class="stat-label">Serviços no Mês</div>
+                </div>
+            </div>
+
+            <div id="earningsList">
+                <div class="earning-item">
+                    <div class="earning-icon completed">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <div class="earning-info">
+                        <div class="earning-title">Plantão Domiciliar - João Silva</div>
+                        <div class="earning-date">31/05/2026 • 4h • R$ 112,00</div>
+                    </div>
+                    <div class="earning-amount">+R$ 112,00</div>
+                </div>
+                <div class="earning-item">
+                    <div class="earning-icon completed">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <div class="earning-info">
+                        <div class="earning-title">Acomp. Hospitalar - Ana Oliveira</div>
+                        <div class="earning-date">31/05/2026 • 6h • R$ 168,00</div>
+                    </div>
+                    <div class="earning-amount">+R$ 168,00</div>
+                </div>
+                <div class="earning-item">
+                    <div class="earning-icon completed">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <div class="earning-info">
+                        <div class="earning-title">Curativos - Maria Santos</div>
+                        <div class="earning-date">30/05/2026 • 2h • R$ 70,00</div>
+                    </div>
+                    <div class="earning-amount">+R$ 70,00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wallet Screen -->
+        <div id="walletScreen" style="display: none;">
+            <button class="btn btn-sm btn-outline-secondary mb-3" onclick="navigateTo('home')" style="border-radius: 20px;">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </button>
+            
+            <h2 style="font-weight: 700; margin-bottom: 20px;">Minha Carteira</h2>
+            
+            <div class="wallet-card" style="text-align: center;">
+                <p style="font-size: 0.85rem; color: #94A3B8; margin-bottom: 8px;">Créditos Disponíveis</p>
+                <div class="wallet-balance" style="font-size: 3rem;">15</div>
+                <div class="wallet-label">créditos</div>
+                <p style="font-size: 0.8rem; color: #94A3B8;">
+                    Cada serviço aceito consome 1 crédito<br>
+                    Taxa fixa de R$ 9,90 por serviço
+                </p>
+                <div class="wallet-actions mt-3">
+                    <button class="btn-wallet buy" onclick="buyCredits()">
+                        Comprar Créditos
+                    </button>
+                </div>
+            </div>
+
+            <h5 style="font-weight: 700; margin: 20px 0 12px;">Pacotes de Créditos</h5>
+            <div style="display: grid; gap: 10px;">
+                <div class="form-section" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; cursor: pointer;" onclick="selectPackage(5)">
+                    <div>
+                        <strong>5 créditos</strong>
+                        <p style="font-size: 0.8rem; color: var(--text-light); margin: 0;">R$ 9,90 por serviço</p>
+                    </div>
+                    <span style="font-weight: 700; color: var(--primary);">R$ 49,50</span>
+                </div>
+                <div class="form-section" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; cursor: pointer; border: 2px solid var(--secondary);" onclick="selectPackage(10)">
+                    <div>
+                        <strong>10 créditos</strong>
+                        <p style="font-size: 0.8rem; color: var(--text-light); margin: 0;">R$ 8,90 por serviço</p>
+                        <span class="badge bg-success">Mais Popular</span>
+                    </div>
+                    <span style="font-weight: 700; color: var(--secondary);">R$ 89,00</span>
+                </div>
+                <div class="form-section" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; cursor: pointer;" onclick="selectPackage(20)">
+                    <div>
+                        <strong>20 créditos</strong>
+                        <p style="font-size: 0.8rem; color: var(--text-light); margin: 0;">R$ 7,90 por serviço</p>
+                    </div>
+                    <span style="font-weight: 700; color: var(--primary);">R$ 158,00</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" style="position: sticky; bottom: 0; background: var(--bg-white); border-top: 1px solid var(--border); padding: 10px 20px; display: flex; justify-content: space-between; box-shadow: 0 -4px 15px rgba(0,0,0,0.05);">
+        <button class="nav-item active" onclick="navigateTo('home')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--primary); border: none; background: none; font-size: 0.7rem; font-weight: 600;">
+            <i class="bi bi-house-door-fill" style="font-size: 1.4rem;"></i>
+            <span>Início</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('earnings')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-light); border: none; background: none; font-size: 0.7rem; font-weight: 500;">
+            <i class="bi bi-graph-up-arrow" style="font-size: 1.4rem;"></i>
+            <span>Ganhos</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('wallet')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-light); border: none; background: none; font-size: 0.7rem; font-weight: 500;">
+            <i class="bi bi-wallet2" style="font-size: 1.4rem;"></i>
+            <span>Carteira</span>
+        </button>
+        <button class="nav-item" onclick="showProfileModal()" style="display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-light); border: none; background: none; font-size: 0.7rem; font-weight: 500;">
+            <i class="bi bi-person-fill" style="font-size: 1.4rem;"></i>
+            <span>Perfil</span>
+        </button>
+    </nav>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        initApp();
+    });
+
+    // App State
+    let appState = {
+        isOnline: true,
+        isOnService: false,
+        activeService: null,
+        currentScreen: 'home',
+        credits: 15,
+        todayEarnings: 380,
+        servicesToday: 2,
+        rating: 4.8,
+        pendingRequests: [],
+        requestTimer: null,
+        serviceTimer: null
+    };
+
+    // Initialize IndexedDB
+    let db;
+    const DB_NAME = 'CareLinkProDB';
+    const DB_VERSION = 1;
+
+    function initApp() {
+        initIndexedDB();
+        loadPendingRequests();
+        updateUI();
+        
+        // Simulate new requests coming in
+        startRequestSimulation();
+    }
+
+    function initIndexedDB() {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        
+        request.onerror = function(event) {
+            console.log('IndexedDB error:', event.target.error);
+        };
+        
+        request.onsuccess = function(event) {
+            db = event.target.result;
+            console.log('CareLink Pro DB connected');
+            loadFromDB();
+        };
+        
+        request.onupgradeneeded = function(event) {
+            db = event.target.result;
+            
+            // Services store
+            if (!db.objectStoreNames.contains('services')) {
+                const serviceStore = db.createObjectStore('services', { keyPath: 'id', autoIncrement: true });
+                serviceStore.createIndex('status', 'status', { unique: false });
+                serviceStore.createIndex('date', 'date', { unique: false });
+            }
+            
+            // Earnings store
+            if (!db.objectStoreNames.contains('earnings')) {
+                const earningsStore = db.createObjectStore('earnings', { keyPath: 'id', autoIncrement: true });
+                earningsStore.createIndex('date', 'date', { unique: false });
+            }
+            
+            // Credits store
+            if (!db.objectStoreNames.contains('credits')) {
+                const creditsStore = db.createObjectStore('credits', { keyPath: 'id', autoIncrement: true });
+                creditsStore.createIndex('type', 'type', { unique: false });
+            }
+
+            console.log('IndexedDB stores created');
+        };
+    }
+
+    function loadFromDB() {
+        if (!db) return;
+        // Load saved state
+    }
+
+    // Toggle Online/Offline Status
+    function toggleStatus() {
+        appState.isOnline = !appState.isOnline;
+        updateStatusUI();
+        
+        if (!appState.isOnline && appState.pendingRequests.length > 0) {
+            appState.pendingRequests = [];
+            $('#pendingRequests').html(`
+                <div style="text-align: center; padding: 30px; color: var(--text-light);">
+                    <i class="bi bi-power" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                    <p style="font-size: 0.9rem;">Você está offline</p>
+                    <p style="font-size: 0.8rem;">Fique online para receber solicitações</p>
+                </div>
+            `);
+            $('#pendingCount').text('0');
+        }
+        
+        if (appState.isOnline) {
+            loadPendingRequests();
+            showToast('Você está online e visível para novos serviços', 'success');
+        } else {
+            showToast('Você está offline. Não receberá novas solicitações.', 'warning');
+        }
+    }
+
+    function updateStatusUI() {
+        const $container = $('#statusContainer');
+        const $dot = $('#statusDot');
+        const $toggle = $('#toggleSwitch');
+        const $text = $('#statusText');
+        const $desc = $('#statusDescription');
+        
+        if (appState.isOnline) {
+            $container.addClass('online');
+            $dot.addClass('online');
+            $toggle.addClass('active');
+            $text.text('Você está online');
+            $desc.text('Recebendo novas solicitações na sua região');
+        } else {
+            $container.removeClass('online');
+            $dot.removeClass('online');
+            $toggle.removeClass('active');
+            $text.text('Você está offline');
+            $desc.text('Ative para receber solicitações');
+        }
+    }
+
+    // Load Pending Requests
+    function loadPendingRequests() {
+        if (!appState.isOnline || appState.isOnService) return;
+        
+        // Simulate pending requests
+        const mockRequests = [
+            {
+                id: 1,
+                clientName: 'Maria Oliveira',
+                patientName: 'João Silva (Pai, 78 anos)',
+                serviceType: 'Plantão Domiciliar',
+                date: '2026-06-05',
+                time: '08:00',
+                duration: 4,
+                address: 'Rua das Flores, 123 - 1.2 km',
+                price: 112.00,
+                notes: 'Mobilidade reduzida, precisa auxílio banho',
+                urgent: true,
+                timeLeft: 45
+            }
+        ];
+        
+        appState.pendingRequests = mockRequests;
+        renderPendingRequests();
+        $('#pendingCount').text(mockRequests.length);
+    }
+
+    function renderPendingRequests() {
+        if (appState.pendingRequests.length === 0) {
+            $('#pendingRequests').html(`
+                <div style="text-align: center; padding: 30px; color: var(--text-light);">
+                    <i class="bi bi-inbox" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                    <p style="font-size: 0.9rem;">Nenhuma solicitação no momento</p>
+                </div>
+            `);
+            return;
+        }
+        
+        let html = '';
+        appState.pendingRequests.forEach(req => {
+            html += `
+                <div class="request-card ${req.urgent ? 'urgent' : ''}" id="request-${req.id}">
+                    <div class="request-header">
+                        <div>
+                            <strong style="font-size: 1rem;">${req.clientName}</strong>
+                            <p style="font-size: 0.75rem; color: var(--text-medium); margin: 2px 0;">Paciente: ${req.patientName}</p>
+                        </div>
+                        ${req.urgent ? `<span class="request-time-badge">
+                            <i class="bi bi-hourglass-split"></i> ${req.timeLeft}s
+                        </span>` : ''}
+                    </div>
+                    <div class="request-details">
+                        <div class="request-chip">
+                            <i class="bi bi-briefcase"></i> ${req.serviceType}
+                        </div>
+                        <div class="request-chip">
+                            <i class="bi bi-clock"></i> ${req.date} • ${req.time} • ${req.duration}h
+                        </div>
+                        <div class="request-chip">
+                            <i class="bi bi-geo-alt"></i> ${req.address}
+                        </div>
+                    </div>
+                    <div class="request-price">
+                        R$ ${req.price.toFixed(2).replace('.', ',')}
+                        <span style="font-size: 0.75rem; color: var(--text-light); font-weight: 400;">
+                            (-R$ 9,90 taxa)
+                        </span>
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn-accept" onclick="acceptRequest(${req.id})">
+                            <i class="bi bi-check-lg"></i> ACEITAR
+                        </button>
+                        <button class="btn-decline" onclick="declineRequest(${req.id})">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        $('#pendingRequests').html(html);
+        
+        // Start countdown for urgent requests
+        startUrgentCountdown();
+    }
+
+    function startUrgentCountdown() {
+        const urgentRequests = appState.pendingRequests.filter(r => r.urgent);
+        urgentRequests.forEach(req => {
+            const interval = setInterval(() => {
+                req.timeLeft--;
+                const $badge = $(`#request-${req.id} .request-time-badge`);
+                if ($badge.length) {
+                    $badge.html(`<i class="bi bi-hourglass-split"></i> ${req.timeLeft}s`);
+                }
+                if (req.timeLeft <= 0) {
+                    clearInterval(interval);
+                    declineRequest(req.id, true);
+                }
+            }, 1000);
+        });
+    }
+
+    // Accept Request
+    function acceptRequest(requestId) {
+        if (appState.credits <= 0) {
+            showToast('Créditos insuficientes! Compre mais créditos para aceitar serviços.', 'danger');
+            showBuyCreditsModal();
+            return;
+        }
+        
+        const request = appState.pendingRequests.find(r => r.id === requestId);
+        if (!request) return;
+        
+        // Deduct credit
+        appState.credits--;
+        updateCreditsUI();
+        
+        // Set as active service
+        appState.isOnService = true;
+        appState.activeService = request;
+        appState.pendingRequests = appState.pendingRequests.filter(r => r.id !== requestId);
+        
+        // Save to IndexedDB
+        saveService(request);
+        
+        // Show accepted animation
+        showToast(`${request.clientName} - Serviço aceito com sucesso! (-1 crédito)`, 'success');
+        
+        if (navigator.vibrate) {
+            navigator.vibrate([100, 50, 100, 50, 200]);
+        }
+        
+        // Navigate to active service
+        navigateTo('activeService');
+        renderPendingRequests();
+        updateActiveServiceUI();
+    }
+
+    function declineRequest(requestId, expired = false) {
+        const request = appState.pendingRequests.find(r => r.id === requestId);
+        appState.pendingRequests = appState.pendingRequests.filter(r => r.id !== requestId);
+        renderPendingRequests();
+        $('#pendingCount').text(appState.pendingRequests.length);
+        
+        if (!expired) {
+            showToast('Solicitação recusada', 'info');
+        }
+    }
+
+    // Save service to IndexedDB
+    function saveService(service) {
+        if (!db) return;
+        
+        const transaction = db.transaction(['services'], 'readwrite');
+        const store = transaction.objectStore('services');
+        
+        store.add({
+            ...service,
+            status: 'accepted',
+            acceptedAt: new Date().toISOString()
+        });
+    }
+
+    // Active Service Functions
+    function updateActiveServiceUI() {
+        if (!appState.activeService) return;
+        
+        const s = appState.activeService;
+        $('#activeClientAvatar').text(s.clientName.split(' ').map(n => n[0]).join(''));
+        $('#activeClientName').text(s.clientName);
+        $('#activeClientAddress').text(s.address.split(' - ')[0]);
+        $('#activeServiceType').html(`<i class="bi bi-briefcase"></i> ${s.serviceType}`);
+        $('#activeServiceTime').html(`<i class="bi bi-clock"></i> ${s.time} • ${s.duration}h`);
+        $('#activeServicePrice').html(`<i class="bi bi-cash"></i> R$ ${s.price.toFixed(2).replace('.', ',')}`);
+        $('#patientDetails').html(`
+            <p><strong>Paciente:</strong> ${s.patientName}</p>
+            <p><strong>Observações:</strong> ${s.notes || 'Nenhuma observação adicional'}</p>
+        `);
+    }
+
+    function checkInService() {
+        if (!appState.activeService) return;
+        
+        showToast('Check-in realizado! Bom atendimento.', 'success');
+        
+        // Update button to "Finalizar"
+        $('.btn-action.success').html('<i class="bi bi-flag"></i> Finalizar Atendimento')
+            .off('click')
+            .on('click', finishService);
+    }
+
+    function finishService() {
+        if (!appState.activeService) return;
+        
+        // Calculate earnings
+        const earnings = appState.activeService.price;
+        appState.todayEarnings += earnings;
+        appState.servicesToday++;
+        
+        // Show confirmation modal
+        const modalHTML = `
+            <div style="text-align: center;">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: #D1FAE5; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">✅</div>
+                <h5 style="font-weight: 700;">Atendimento Finalizado</h5>
+                <p style="color: var(--text-medium);">Confirme que o cliente realizou o pagamento</p>
+                
+                <div style="background: var(--bg-light); border-radius: 16px; padding: 16px; margin: 16px 0; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>Valor do serviço:</span>
+                        <strong>R$ ${earnings.toFixed(2).replace('.', ',')}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--danger);">
+                        <span>Taxa CareLink:</span>
+                        <strong>-R$ 9,90</strong>
+                    </div>
+                    <hr>
+                    <div style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+                        <strong>Seu ganho líquido:</strong>
+                        <strong style="color: var(--secondary);">R$ ${(earnings - 9.90).toFixed(2).replace('.', ',')}</strong>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn btn-success" onclick="confirmPayment()" style="border-radius: 20px; padding: 12px;">
+                        <i class="bi bi-check-lg"></i> Cliente Pagou
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="reportIssue()" style="border-radius: 20px; padding: 12px;">
+                        <i class="bi bi-exclamation-triangle"></i> Reportar
+                    </button>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary w-100 mt-2" onclick="closeModal()" style="border-radius: 20px;">Fechar</button>
+            </div>
+        `;
+        showModal(modalHTML);
+    }
+
+    function confirmPayment() {
+        closeModal();
+        
+        // Update state
+        appState.isOnService = false;
+        appState.activeService = null;
+        
+        // Update UI
+        updateUI();
+        navigateTo('home');
+        
+        showToast('Pagamento confirmado! Ganho de R$ ' + (appState.todayEarnings).toFixed(2).replace('.', ',') + ' hoje', 'success');
+        
+        // Check if credits are low
+        if (appState.credits <= 2) {
+            setTimeout(() => {
+                showToast('⚠️ Créditos baixos! Compre mais para continuar aceitando serviços.', 'warning');
+            }, 2000);
+        }
+    }
+
+    function reportIssue() {
+        closeModal();
+        showToast('Problema reportado. Nossa equipe entrará em contato.', 'warning');
+    }
+
+    function cancelService() {
+        if (confirm('Tem certeza que deseja cancelar este atendimento? Penalidades podem ser aplicadas.')) {
+            appState.isOnService = false;
+            appState.activeService = null;
+            navigateTo('home');
+            showToast('Atendimento cancelado', 'danger');
+        }
+    }
+
+    function navigateToLocation() {
+        showToast('Abrindo navegação...', 'info');
+    }
+
+    function openChat() {
+        showToast('Abrindo chat com o cliente...', 'info');
+    }
+
+    // Credits / Wallet
+    function buyCredits() {
+        navigateTo('wallet');
+    }
+
+    function selectPackage(amount) {
+        const prices = { 5: 49.50, 10: 89.00, 20: 158.00 };
+        if (confirm(`Comprar ${amount} créditos por R$ ${prices[amount].toFixed(2)}?`)) {
+            appState.credits += amount;
+            updateCreditsUI();
+            showToast(`${amount} créditos adicionados à sua carteira!`, 'success');
+        }
+    }
+
+    function showWalletHistory() {
+        const modalHTML = `
+            <h5 style="font-weight: 700; margin-bottom: 16px;">Extrato de Créditos</h5>
+            <div class="earning-item">
+                <div class="earning-icon completed"><i class="bi bi-cart"></i></div>
+                <div class="earning-info">
+                    <div class="earning-title">Compra de 10 créditos</div>
+                    <div class="earning-date">30/05/2026</div>
+                </div>
+                <span style="color: var(--secondary); font-weight: 700;">+10</span>
+            </div>
+            <div class="earning-item">
+                <div class="earning-icon completed"><i class="bi bi-check-lg"></i></div>
+                <div class="earning-info">
+                    <div class="earning-title">Serviço - Maria Oliveira</div>
+                    <div class="earning-date">31/05/2026</div>
+                </div>
+                <span style="color: var(--danger); font-weight: 700;">-1</span>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary w-100 mt-3" onclick="closeModal()" style="border-radius: 20px;">Fechar</button>
+        `;
+        showModal(modalHTML);
+    }
+
+    function showBuyCreditsModal() {
+        closeModal();
+        navigateTo('wallet');
+    }
+
+    function updateCreditsUI() {
+        $('#walletCredits, #quickCredits').text(appState.credits);
+        if (appState.credits <= 2) {
+            $('#walletCredits, #quickCredits').css('color', 'var(--danger)');
+        } else {
+            $('#walletCredits, #quickCredits').css('color', '');
+        }
+    }
+
+    // Simulate new requests
+    function startRequestSimulation() {
+        setInterval(() => {
+            if (appState.isOnline && !appState.isOnService && appState.pendingRequests.length < 3) {
+                const newRequest = {
+                    id: Date.now(),
+                    clientName: ['Ana Costa', 'Pedro Santos', 'Lucia Ferreira'][Math.floor(Math.random() * 3)],
+                    patientName: 'Paciente (' + Math.floor(Math.random() * 20 + 60) + ' anos)',
+                    serviceType: ['Acompanhamento Consulta', 'Plantão Domiciliar', 'Acompanhante Hospitalar'][Math.floor(Math.random() * 3)],
+                    date: '2026-06-05',
+                    time: ['08:00', '10:00', '14:00', '22:00'][Math.floor(Math.random() * 4)],
+                    duration: [2, 4, 6, 8, 12][Math.floor(Math.random() * 5)],
+                    address: ['Rua A, 100 - 0.8 km', 'Av. B, 200 - 1.5 km', 'Rua C, 300 - 2.1 km'][Math.floor(Math.random() * 3)],
+                    price: [50, 100, 150, 200][Math.floor(Math.random() * 4)],
+                    notes: 'Necessita cuidados especiais',
+                    urgent: Math.random() > 0.5,
+                    timeLeft: Math.floor(Math.random() * 50 + 20)
+                };
+                
+                appState.pendingRequests.push(newRequest);
+                renderPendingRequests();
+                $('#pendingCount').text(appState.pendingRequests.length);
+                
+                // Vibrate on new request
+                if (navigator.vibrate) {
+                    navigator.vibrate(200);
+                }
+            }
+        }, 15000); // New request every 15 seconds
+    }
+
+    // UI Update
+    function updateUI() {
+        $('#todayEarnings').text(appState.todayEarnings);
+        $('#servicesCount').text(appState.servicesToday);
+        $('#ratingValue').text(appState.rating);
+        updateCreditsUI();
+    }
+
+    // Navigation
+    function navigateTo(screen) {
+        // Hide all screens
+        $('#homeScreen, #activeServiceScreen, #earningsScreen, #walletScreen').hide();
+        
+        // Update nav
+        $('.nav-item').css('color', 'var(--text-light)');
+        $('.nav-item').css('font-weight', '500');
+        
+        switch(screen) {
+            case 'home':
+                $('#homeScreen').show();
+                appState.currentScreen = 'home';
+                $('.nav-item:first').css({color: 'var(--primary)', fontWeight: '600'});
+                break;
+            case 'activeService':
+                $('#activeServiceScreen').show();
+                appState.currentScreen = 'activeService';
+                updateActiveServiceUI();
+                break;
+            case 'earnings':
+                $('#earningsScreen').show();
+                appState.currentScreen = 'earnings';
+                $('.nav-item:eq(1)').css({color: 'var(--primary)', fontWeight: '600'});
+                break;
+            case 'wallet':
+                $('#walletScreen').show();
+                appState.currentScreen = 'wallet';
+                $('.nav-item:eq(2)').css({color: 'var(--primary)', fontWeight: '600'});
+                break;
+        }
+    }
+
+    // Notifications
+    function showNotifications() {
+        const modalHTML = `
+            <h5 style="font-weight: 700; margin-bottom: 16px;">
+                <i class="bi bi-bell-fill" style="color: var(--primary);"></i> Notificações
+            </h5>
+            <div style="padding: 14px; background: #FEF3C7; border-radius: 12px; margin-bottom: 10px;">
+                <p style="font-weight: 600; margin: 0; font-size: 0.9rem;">⚠️ Créditos baixos</p>
+                <p style="font-size: 0.8rem; color: var(--text-medium); margin: 4px 0 0;">Você tem apenas 2 créditos restantes</p>
+            </div>
+            <div style="padding: 14px; background: #F0FDF4; border-radius: 12px; margin-bottom: 10px;">
+                <p style="font-weight: 600; margin: 0; font-size: 0.9rem;">✅ Pagamento confirmado</p>
+                <p style="font-size: 0.8rem; color: var(--text-medium); margin: 4px 0 0;">Maria Oliveira - R$ 112,00</p>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary w-100 mt-2" onclick="closeModal()" style="border-radius: 20px;">Fechar</button>
+        `;
+        showModal(modalHTML);
+        $('#notificationCount').hide();
+    }
+
+    function showProfileModal() {
+        const modalHTML = `
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; font-weight: 700;">CE</div>
+                <h5 style="font-weight: 700;">Carlos Eduardo</h5>
+                <p style="color: var(--text-medium); font-size: 0.85rem;">Técnico de Enfermagem</p>
+                <p style="color: var(--accent);">⭐ 4.8 (238 avaliações)</p>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action"><i class="bi bi-pencil-square me-2"></i> Editar Perfil</a>
+                <a href="#" class="list-group-item list-group-item-action"><i class="bi bi-file-earmark-text me-2"></i> Documentos (COREN 123456-SP)</a>
+                <a href="#" class="list-group-item list-group-item-action"><i class="bi bi-gear me-2"></i> Configurações</a>
+                <a href="#" class="list-group-item list-group-item-action"><i class="bi bi-question-circle me-2"></i> Central de Ajuda</a>
+                <a href="#" class="list-group-item list-group-item-action text-danger"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary w-100 mt-3" onclick="closeModal()" style="border-radius: 20px;">Fechar</button>
+        `;
+        showModal(modalHTML);
+    }
+
+    // Modal Functions
+    function showModal(content) {
+        $('#modalContent').html(content);
+        $('#modalOverlay').addClass('active');
+    }
+
+    function closeModal() {
+        $('#modalOverlay').removeClass('active');
+    }
+
+    $('#modalOverlay').on('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+
+    // Toast
+    function showToast(message, type = 'info') {
+        const colors = {
+            success: '#10B981',
+            warning: '#F59E0B',
+            danger: '#EF4444',
+            info: '#0891B2'
+        };
+        
+        const toastHTML = `
+            <div class="toast align-items-center text-white border-0" role="alert" 
+                 style="background: ${colors[type]}; min-width: 280px; margin-bottom: 8px;">
+                <div class="d-flex">
+                    <div class="toast-body" style="font-weight: 500;">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        
+        if ($('.toast-container').length === 0) {
+            $('body').append('<div class="toast-container"></div>');
+        }
+        
+        const $toast = $(toastHTML).appendTo('.toast-container');
+        const toast = new bootstrap.Toast($toast[0], { delay: 3500 });
+        toast.show();
+        
+        $toast.on('hidden.bs.toast', function() {
+            $(this).remove();
+        });
+    }
+
+    // Keyboard shortcuts
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if ($('#modalOverlay').hasClass('active')) {
+                closeModal();
+            } else {
+                navigateTo('home');
+            }
+        }
+        if (e.key === '1' && appState.pendingRequests.length > 0) {
+            acceptRequest(appState.pendingRequests[0].id);
+        }
+    });
+
+    // Initial load
+    console.log('🩺 CareLink Pro v1.0');
+    console.log('💼 App do Profissional de Saúde');
+    console.log('💰 Pronto para receber solicitações!');
+</script>
+
+</body>
+</html>

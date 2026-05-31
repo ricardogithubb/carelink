@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CareLink - Encontre Profissionais de Saúde</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0891B2;
+            --primary-dark: #0E7490;
+            --primary-light: #06B6D4;
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --danger: #EF4444;
+            --bg-light: #F0FDFA;
+            --bg-white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-medium: #475569;
+            --text-light: #64748B;
+            --border: #E2E8F0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #F8FAFC;
+            color: var(--text-dark);
+            height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* App Container - Mobile First */
+        .app-container {
+            max-width: 430px;
+            margin: 0 auto;
+            height: 100vh;
+            background: var(--bg-white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        @media (min-width: 431px) {
+            body {
+                background: linear-gradient(135deg, #0891B2 0%, #0E7490 50%, #06B6D4 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+            .app-container {
+                border-radius: 28px;
+                height: 92vh;
+                max-height: 900px;
+            }
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 16px 20px;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-logo i {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            height: calc(100vh - 140px);
+            overflow-y: auto;
+            padding: 20px;
+            scroll-behavior: smooth;
+        }
+
+        @media (min-width: 431px) {
+            .main-content {
+                height: calc(92vh - 200px);
+                max-height: 700px;
+            }
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            margin-bottom: 24px;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-medium);
+            font-weight: 400;
+        }
+
+        /* Quick Action Cards */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .quick-action-card {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #E0F2FE 100%);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
+        }
+
+        .quick-action-card.primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+
+        .quick-action-card.primary .card-label {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .card-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-medium);
+            margin-bottom: 2px;
+        }
+
+        .card-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .quick-action-card.primary .card-value {
+            color: white;
+        }
+
+        /* Service Type Cards */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .service-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .service-type-card {
+            background: var(--bg-white);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .service-type-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .service-type-card.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(8, 145, 178, 0.05) 0%, rgba(6, 182, 212, 0.1) 100%);
+            box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.2);
+        }
+
+        .service-type-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .service-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .service-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+
+        .service-price {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* Form Styles */
+        .form-section {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-label i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .form-select, .form-control {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            background: var(--bg-white);
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.15);
+        }
+
+        /* Period Selector */
+        .period-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .period-option {
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .period-option:hover {
+            border-color: var(--primary);
+        }
+
+        .period-option.selected {
+            border-color: var(--primary);
+            background: rgba(8, 145, 178, 0.08);
+        }
+
+        .period-icon {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+
+        .period-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Map Placeholder */
+        .map-placeholder {
+            background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%);
+            border-radius: var(--radius-md);
+            padding: 40px;
+            text-align: center;
+            color: var(--primary-dark);
+            border: 2px dashed var(--primary-light);
+            margin-bottom: 20px;
+        }
+
+        .map-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        /* Button */
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: var(--radius-xl);
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(8, 145, 178, 0.3);
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(8, 145, 178, 0.4);
+        }
+
+        .btn-primary-custom:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary-custom:disabled {
+            background: #CBD5E1;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Requesting Screen */
+        .requesting-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .pulse-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            margin: 0 auto 20px;
+            animation: pulse 2s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 0 rgba(8, 145, 178, 0.5);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(8, 145, 178, 0.5);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 0 20px rgba(8, 145, 178, 0);
+                transform: scale(1.05);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(8, 145, 178, 0);
+                transform: scale(1);
+            }
+        }
+
+        .pulse-circle i {
+            font-size: 3rem;
+            color: white;
+        }
+
+        .searching-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .searching-dots::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        /* Professional Card */
+        .professional-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--secondary);
+            margin-bottom: 20px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .professional-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .professional-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .professional-info {
+            flex: 1;
+        }
+
+        .professional-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .professional-category {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .professional-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .professional-details {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .detail-chip {
+            background: var(--bg-light);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            color: var(--text-medium);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .detail-chip i {
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: sticky;
+            bottom: 0;
+            background: var(--bg-white);
+            border-top: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+            border: none;
+            background: none;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .nav-item i {
+            font-size: 1.4rem;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        /* Scrollbar */
+        .main-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 360px) {
+            .service-types {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container" id="appContainer">
+    
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="header-logo">
+                <i class="bi bi-heart-pulse-fill"></i>
+                CareLink
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" onclick="showNotifications()" title="Notificações">
+                    <i class="bi bi-bell-fill"></i>
+                    <span class="notification-badge"></span>
+                </button>
+                <button class="header-btn" onclick="showProfile()" title="Perfil">
+                    <i class="bi bi-person-fill"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- Home Screen -->
+        <div id="homeScreen">
+            <!-- Welcome -->
+            <div class="welcome-section">
+                <h1 class="welcome-title">Olá, Maria 👋</h1>
+                <p class="welcome-subtitle">Como podemos ajudar você hoje?</p>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="quick-action-card primary" onclick="startNewRequest()">
+                    <div class="card-icon">🆘</div>
+                    <div class="card-label">Solicitar agora</div>
+                    <div class="card-value">Novo atendimento</div>
+                </div>
+                <div class="quick-action-card" onclick="showHistory()">
+                    <div class="card-icon">📋</div>
+                    <div class="card-label">Último serviço</div>
+                    <div class="card-value">Ver histórico</div>
+                </div>
+            </div>
+
+            <!-- Service Types -->
+            <h3 class="section-title">
+                Escolha o profissional
+                <span style="font-size: 0.8rem; color: var(--primary); cursor: pointer;" onclick="showAllServices()">Ver todos →</span>
+            </h3>
+            <div class="service-types" id="serviceTypes">
+                <div class="service-type-card selected" onclick="selectServiceType(this, 'tecnico')" data-type="tecnico">
+                    <div class="service-icon">💉</div>
+                    <div class="service-name">Técnico Enfermagem</div>
+                    <div class="service-price">A partir R$25/h</div>
+                </div>
+                <div class="service-type-card" onclick="selectServiceType(this, 'cuidador')" data-type="cuidador">
+                    <div class="service-icon">🤲</div>
+                    <div class="service-name">Cuidador de Idosos</div>
+                    <div class="service-price">A partir R$22/h</div>
+                </div>
+                <div class="service-type-card" onclick="selectServiceType(this, 'enfermeiro')" data-type="enfermeiro">
+                    <div class="service-icon">🏥</div>
+                    <div class="service-name">Enfermeiro(a)</div>
+                    <div class="service-price">A partir R$40/h</div>
+                </div>
+            </div>
+
+            <!-- Recent Professionals -->
+            <h3 class="section-title">Profissionais próximos</h3>
+            <div id="nearbyProfessionals">
+                <div class="map-placeholder">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    <p style="margin-top: 10px; font-weight: 500;">Ative sua localização</p>
+                    <p style="font-size: 0.85rem; opacity: 0.8;">para ver profissionais próximos</p>
+                    <button class="btn btn-sm btn-outline-primary mt-2" onclick="enableLocation()" style="border-radius: 20px; padding: 8px 20px;">
+                        <i class="bi bi-crosshair"></i> Ativar GPS
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Request Form Screen -->
+        <div id="requestScreen" style="display: none;">
+            <button class="btn btn-sm btn-outline-secondary mb-3" onclick="goBack()" style="border-radius: 20px;">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </button>
+            
+            <h2 class="welcome-title mb-4">Nova Solicitação</h2>
+
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="bi bi-person-badge"></i> Tipo de Serviço
+                </label>
+                <select class="form-select mb-3" id="serviceCategory">
+                    <option value="">Selecione o tipo de atendimento</option>
+                    <option value="acompanhamento_consulta">Acompanhamento em Consulta</option>
+                    <option value="acompanhante_hospitalar">Acompanhante Hospitalar</option>
+                    <option value="plantao_domiciliar">Plantão Domiciliar</option>
+                    <option value="curativos">Curativos / Medicação</option>
+                    <option value="cuidados_diarios">Cuidados Diários (banho, alimentação)</option>
+                    <option value="pernoite">Pernoite (22h às 6h)</option>
+                </select>
+
+                <label class="form-label">
+                    <i class="bi bi-people-fill"></i> Paciente
+                </label>
+                <select class="form-select mb-3" id="patientSelect">
+                    <option value="self">Eu mesmo(a)</option>
+                    <option value="joao">João Silva (Pai, 78 anos)</option>
+                    <option value="ana">Ana Oliveira (Mãe, 72 anos)</option>
+                </select>
+
+                <label class="form-label">
+                    <i class="bi bi-clock-fill"></i> Período
+                </label>
+                <div class="period-selector mb-3">
+                    <div class="period-option selected" onclick="selectPeriod(this, 'data_especifica')">
+                        <div class="period-icon">📅</div>
+                        <div class="period-name">Data Específica</div>
+                    </div>
+                    <div class="period-option" onclick="selectPeriod(this, 'agora')">
+                        <div class="period-icon">⚡</div>
+                        <div class="period-name">O mais breve</div>
+                    </div>
+                </div>
+
+                <div id="dateTimeFields">
+                    <label class="form-label">
+                        <i class="bi bi-calendar-event"></i> Data
+                    </label>
+                    <input type="date" class="form-control mb-3" id="serviceDate" min="2026-06-01" value="2026-06-05">
+
+                    <label class="form-label">
+                        <i class="bi bi-clock"></i> Horário de Início
+                    </label>
+                    <input type="time" class="form-control mb-3" id="serviceTime" value="08:00">
+
+                    <label class="form-label">
+                        <i class="bi bi-hourglass-split"></i> Duração
+                    </label>
+                    <select class="form-select mb-3" id="serviceDuration">
+                        <option value="2">2 horas</option>
+                        <option value="4" selected>4 horas</option>
+                        <option value="6">6 horas</option>
+                        <option value="8">8 horas</option>
+                        <option value="12">12 horas (plantão)</option>
+                        <option value="24">24 horas</option>
+                    </select>
+                </div>
+
+                <label class="form-label">
+                    <i class="bi bi-geo-alt-fill"></i> Local do Atendimento
+                </label>
+                <input type="text" class="form-control mb-3" id="serviceAddress" placeholder="Endereço completo" value="Rua das Flores, 123 - São Paulo/SP">
+
+                <label class="form-label">
+                    <i class="bi bi-chat-square-text"></i> Observações
+                </label>
+                <textarea class="form-control mb-3" id="serviceNotes" rows="3" placeholder="Descreva condições do paciente, restrições, necessidades especiais..."></textarea>
+            </div>
+
+            <!-- Price Summary -->
+            <div class="form-section" id="priceSummary">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 600;">Valor Estimado</span>
+                    <span style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">R$ <span id="estimatedPrice">112,00</span></span>
+                </div>
+                <p style="font-size: 0.75rem; color: var(--text-light); margin-top: 8px;">
+                    ⓘ Pagamento direto ao profissional. Você paga somente após o atendimento.
+                </p>
+            </div>
+
+            <button class="btn-primary-custom" onclick="submitRequest()">
+                <i class="bi bi-search"></i> Buscar Profissional
+            </button>
+        </div>
+
+        <!-- Searching Screen -->
+        <div id="searchingScreen" style="display: none;">
+            <div class="requesting-screen">
+                <div class="pulse-circle">
+                    <i class="bi bi-search"></i>
+                </div>
+                <p class="searching-text">Buscando profissionais<span class="searching-dots"></span></p>
+                <p style="color: var(--text-medium);">Aguardando aceitação</p>
+                
+                <div class="mt-4">
+                    <div class="professional-card" style="border-color: var(--border); opacity: 0.7;">
+                        <p style="text-align: center; color: var(--text-medium);">
+                            <i class="bi bi-people-fill"></i> 12 profissionais disponíveis na sua região
+                        </p>
+                    </div>
+                </div>
+
+                <button class="btn btn-outline-danger mt-4" onclick="cancelRequest()" style="border-radius: 20px; padding: 10px 30px;">
+                    Cancelar Solicitação
+                </button>
+            </div>
+        </div>
+
+        <!-- Professional Found Screen -->
+        <div id="foundScreen" style="display: none;">
+            <div style="background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px; text-align: center;">
+                <i class="bi bi-check-circle-fill" style="font-size: 2rem; color: var(--secondary);"></i>
+                <p style="font-weight: 600; color: #065F46; margin-top: 8px;">Profissional encontrado!</p>
+            </div>
+
+            <div class="professional-card" id="acceptedProfessional">
+                <!-- Filled by JavaScript -->
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-outline-primary flex-grow-1" onclick="contactProfessional()" style="border-radius: 20px;">
+                    <i class="bi bi-chat-dots"></i> Chat
+                </button>
+                <button class="btn btn-outline-success flex-grow-1" onclick="callProfessional()" style="border-radius: 20px;">
+                    <i class="bi bi-telephone"></i> Ligar
+                </button>
+            </div>
+
+            <button class="btn btn-outline-danger w-100 mt-3" onclick="cancelAcceptedRequest()" style="border-radius: 20px;">
+                Cancelar Atendimento
+            </button>
+        </div>
+
+        <!-- History Screen -->
+        <div id="historyScreen" style="display: none;">
+            <button class="btn btn-sm btn-outline-secondary mb-3" onclick="goBack()" style="border-radius: 20px;">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </button>
+            
+            <h2 class="welcome-title mb-4">Histórico de Serviços</h2>
+            
+            <div class="form-section">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0;">
+                    <div style="width: 45px; height: 45px; border-radius: 50%; background: #E0F2FE; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">💉</div>
+                    <div style="flex: 1;">
+                        <p style="font-weight: 600; margin: 0;">Téc. Enfermagem - Plantão 4h</p>
+                        <p style="font-size: 0.8rem; color: var(--text-light); margin: 0;">15/05/2026 - Ana Santos</p>
+                    </div>
+                    <span style="color: var(--secondary); font-weight: 600;">R$ 100,00</span>
+                </div>
+                <hr>
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0;">
+                    <div style="width: 45px; height: 45px; border-radius: 50%; background: #FEF3C7; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">🤲</div>
+                    <div style="flex: 1;">
+                        <p style="font-weight: 600; margin: 0;">Cuidador - Acomp. Hospitalar</p>
+                        <p style="font-size: 0.8rem; color: var(--text-light); margin: 0;">10/05/2026 - João Silva</p>
+                    </div>
+                    <span style="color: var(--secondary); font-weight: 600;">R$ 180,00</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="navigateTo('home')">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Início</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('request')">
+            <i class="bi bi-plus-circle-fill"></i>
+            <span>Solicitar</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('history')">
+            <i class="bi bi-clock-history"></i>
+            <span>Histórico</span>
+        </button>
+        <button class="nav-item" onclick="navigateTo('profile')">
+            <i class="bi bi-person-fill"></i>
+            <span>Perfil</span>
+        </button>
+    </nav>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        initApp();
+    });
+
+    // App State
+    let appState = {
+        currentScreen: 'home',
+        selectedServiceType: 'tecnico',
+        selectedPeriod: 'data_especifica',
+        isRequesting: false,
+        requestTimer: null,
+        professionalFound: false
+    };
+
+    // Initialize IndexedDB
+    let db;
+    const DB_NAME = 'CareLinkDB';
+    const DB_VERSION = 1;
+
+    function initApp() {
+        initIndexedDB();
+        loadUserData();
+        updatePriceEstimate();
+        setupEventListeners();
+    }
+
+    function initIndexedDB() {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        
+        request.onerror = function(event) {
+            console.log('IndexedDB error:', event.target.error);
+        };
+        
+        request.onsuccess = function(event) {
+            db = event.target.result;
+            console.log('IndexedDB connected');
+            loadFromDB();
+        };
+        
+        request.onupgradeneeded = function(event) {
+            db = event.target.result;
+            
+            // Users store
+            if (!db.objectStoreNames.contains('users')) {
+                const userStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
+                userStore.createIndex('email', 'email', { unique: true });
+            }
+            
+            // Requests store
+            if (!db.objectStoreNames.contains('requests')) {
+                const requestStore = db.createObjectStore('requests', { keyPath: 'id', autoIncrement: true });
+                requestStore.createIndex('status', 'status', { unique: false });
+                requestStore.createIndex('timestamp', 'timestamp', { unique: false });
+            }
+            
+            // Professionals store
+            if (!db.objectStoreNames.contains('professionals')) {
+                const profStore = db.createObjectStore('professionals', { keyPath: 'id', autoIncrement: true });
+                profStore.createIndex('type', 'type', { unique: false });
+                profStore.createIndex('rating', 'rating', { unique: false });
+            }
+
+            console.log('IndexedDB stores created');
+        };
+    }
+
+    function loadFromDB() {
+        if (!db) return;
+        
+        // Load user data
+        const transaction = db.transaction(['users'], 'readonly');
+        const store = transaction.objectStore('users');
+        const request = store.getAll();
+        
+        request.onsuccess = function(event) {
+            const users = event.target.result;
+            if (users.length === 0) {
+                // Create default user
+                saveDefaultUser();
+            }
+        };
+        
+        // Load professionals
+        loadProfessionals();
+    }
+
+    function saveDefaultUser() {
+        if (!db) return;
+        
+        const transaction = db.transaction(['users'], 'readwrite');
+        const store = transaction.objectStore('users');
+        
+        const defaultUser = {
+            name: 'Maria Oliveira',
+            email: 'maria@email.com',
+            phone: '(11) 99999-9999',
+            address: 'Rua das Flores, 123 - São Paulo/SP',
+            dependents: [
+                { name: 'João Silva', age: 78, relation: 'Pai' },
+                { name: 'Ana Oliveira', age: 72, relation: 'Mãe' }
+            ],
+            createdAt: new Date().toISOString()
+        };
+        
+        store.add(defaultUser);
+        console.log('Default user created');
+    }
+
+    function loadProfessionals() {
+        if (!db) {
+            // Simulate professionals without DB
+            return;
+        }
+        
+        const transaction = db.transaction(['professionals'], 'readonly');
+        const store = transaction.objectStore('professionals');
+        const request = store.count();
+        
+        request.onsuccess = function(event) {
+            if (event.target.result === 0) {
+                seedProfessionals();
+            }
+        };
+    }
+
+    function seedProfessionals() {
+        if (!db) return;
+        
+        const professionals = [
+            {
+                name: 'Carlos Eduardo',
+                type: 'tecnico',
+                category: 'Técnico de Enfermagem',
+                rating: 4.9,
+                reviews: 238,
+                distance: '1.2 km',
+                pricePerHour: 25,
+                specialties: ['Curativos', 'Medicação', 'Plantão'],
+                corEn: '123456-SP',
+                photo: 'CE'
+            },
+            {
+                name: 'Juliana Costa',
+                type: 'cuidador',
+                category: 'Cuidadora de Idosos',
+                rating: 4.8,
+                reviews: 156,
+                distance: '2.5 km',
+                pricePerHour: 22,
+                specialties: ['Alzheimer', 'Mobilidade', 'Banho'],
+                certificate: 'Cuidadores Certificados',
+                photo: 'JC'
+            },
+            {
+                name: 'Dra. Amanda Reis',
+                type: 'enfermeiro',
+                category: 'Enfermeira',
+                rating: 5.0,
+                reviews: 312,
+                distance: '3.8 km',
+                pricePerHour: 40,
+                specialties: ['UTI', 'Curativos Complexos', 'Pós-cirúrgico'],
+                corEn: '78901-SP',
+                photo: 'AR'
+            },
+            {
+                name: 'Roberto Lima',
+                type: 'tecnico',
+                category: 'Técnico de Enfermagem',
+                rating: 4.7,
+                reviews: 89,
+                distance: '0.8 km',
+                pricePerHour: 25,
+                specialties: ['Home Care', 'Idosos', 'Noturno'],
+                corEn: '23456-SP',
+                photo: 'RL'
+            }
+        ];
+        
+        const transaction = db.transaction(['professionals'], 'readwrite');
+        const store = transaction.objectStore('professionals');
+        
+        professionals.forEach(prof => store.add(prof));
+        console.log('Professionals seeded');
+    }
+
+    function loadUserData() {
+        // Simulated user data for demo
+        if (db) {
+            const transaction = db.transaction(['users'], 'readonly');
+            const store = transaction.objectStore('users');
+            const request = store.getAll();
+            
+            request.onsuccess = function(event) {
+                const users = event.target.result;
+                if (users.length > 0) {
+                    const user = users[0];
+                    $('.welcome-title').text(`Olá, ${user.name.split(' ')[0]} 👋`);
+                }
+            };
+        }
+    }
+
+    function setupEventListeners() {
+        // Date change updates price
+        $('#serviceDate, #serviceTime, #serviceDuration, #serviceCategory').on('change', updatePriceEstimate);
+        
+        // Period selection
+        $('#serviceCategory').on('change', function() {
+            const category = $(this).val();
+            if (category === 'pernoite') {
+                $('#serviceTime').val('22:00');
+                $('#serviceDuration').val('8');
+            }
+            updatePriceEstimate();
+        });
+    }
+
+    // Screen Navigation
+    function navigateTo(screen) {
+        // Hide all screens
+        $('#homeScreen, #requestScreen, #searchingScreen, #foundScreen, #historyScreen').hide();
+        
+        // Reset state
+        appState.isRequesting = false;
+        if (appState.requestTimer) {
+            clearTimeout(appState.requestTimer);
+            appState.requestTimer = null;
+        }
+        
+        // Update nav
+        $('.nav-item').removeClass('active');
+        $(`.nav-item:contains('${getNavLabel(screen)}')`).addClass('active');
+        
+        switch(screen) {
+            case 'home':
+                $('#homeScreen').show();
+                appState.currentScreen = 'home';
+                break;
+            case 'request':
+                $('#requestScreen').show();
+                appState.currentScreen = 'request';
+                updatePriceEstimate();
+                break;
+            case 'history':
+                $('#historyScreen').show();
+                appState.currentScreen = 'history';
+                break;
+            case 'profile':
+                showProfileModal();
+                break;
+            default:
+                $('#homeScreen').show();
+                appState.currentScreen = 'home';
+        }
+    }
+
+    function getNavLabel(screen) {
+        const labels = { home: 'Início', request: 'Solicitar', history: 'Histórico', profile: 'Perfil' };
+        return labels[screen] || 'Início';
+    }
+
+    function goBack() {
+        navigateTo('home');
+    }
+
+    // Service Type Selection
+    function selectServiceType(element, type) {
+        $('#serviceTypes .service-type-card').removeClass('selected');
+        $(element).addClass('selected');
+        appState.selectedServiceType = type;
+        
+        // Add subtle animation
+        $(element).css('transform', 'scale(0.95)');
+        setTimeout(() => $(element).css('transform', ''), 150);
+    }
+
+    // Period Selection
+    function selectPeriod(element, period) {
+        $('.period-option').removeClass('selected');
+        $(element).addClass('selected');
+        appState.selectedPeriod = period;
+        
+        if (period === 'agora') {
+            $('#dateTimeFields').slideUp(300);
+            // Set to current date/time
+            const now = new Date();
+            $('#serviceDate').val(now.toISOString().split('T')[0]);
+            $('#serviceTime').val(now.toTimeString().slice(0,5));
+        } else {
+            $('#dateTimeFields').slideDown(300);
+        }
+    }
+
+    // Price Estimation
+    function updatePriceEstimate() {
+        const category = $('#serviceCategory').val();
+        const duration = parseInt($('#serviceDuration').val()) || 4;
+        const time = $('#serviceTime').val();
+        
+        let baseRate = 25; // Default for Técnico
+        
+        switch(appState.selectedServiceType) {
+            case 'tecnico': baseRate = 25; break;
+            case 'cuidador': baseRate = 22; break;
+            case 'enfermeiro': baseRate = 40; break;
+        }
+        
+        // Night shift multiplier
+        if (time && (time >= '22:00' || time < '06:00')) {
+            baseRate *= 1.3;
+        }
+        
+        // Category multiplier
+        if (category === 'pernoite') {
+            baseRate *= 1.2;
+            $('#serviceTime').val('22:00');
+        }
+        
+        const total = Math.round(baseRate * duration);
+        $('#estimatedPrice').text(total.toFixed(2).replace('.', ','));
+    }
+
+    // Start New Request
+    function startNewRequest() {
+        navigateTo('request');
+    }
+
+    // Submit Request
+    function submitRequest() {
+        // Validate form
+        const category = $('#serviceCategory').val();
+        const address = $('#serviceAddress').val();
+        
+        if (!category) {
+            showToast('Selecione o tipo de serviço', 'warning');
+            $('#serviceCategory').focus();
+            return;
+        }
+        
+        if (!address) {
+            showToast('Informe o endereço do atendimento', 'warning');
+            $('#serviceAddress').focus();
+            return;
+        }
+        
+        // Save request to IndexedDB
+        saveRequest();
+        
+        // Show searching screen
+        $('#requestScreen, #homeScreen, #foundScreen').hide();
+        $('#searchingScreen').show();
+        appState.currentScreen = 'searching';
+        appState.isRequesting = true;
+        
+        // Update nav
+        $('.nav-item').removeClass('active');
+        
+        // Simulate finding a professional (2-4 seconds)
+        const searchTime = 2000 + Math.random() * 2000;
+        appState.requestTimer = setTimeout(() => {
+            professionalAccepted();
+        }, searchTime);
+    }
+
+    function saveRequest() {
+        if (!db) return;
+        
+        const transaction = db.transaction(['requests'], 'readwrite');
+        const store = transaction.objectStore('requests');
+        
+        const requestData = {
+            serviceType: $('#serviceCategory').val(),
+            patient: $('#patientSelect').val(),
+            date: $('#serviceDate').val(),
+            time: $('#serviceTime').val(),
+            duration: $('#serviceDuration').val(),
+            address: $('#serviceAddress').val(),
+            notes: $('#serviceNotes').val(),
+            price: $('#estimatedPrice').text(),
+            status: 'searching',
+            timestamp: new Date().toISOString()
+        };
+        
+        store.add(requestData);
+    }
+
+    function professionalAccepted() {
+        appState.isRequesting = false;
+        appState.professionalFound = true;
+        
+        $('#searchingScreen').hide();
+        $('#foundScreen').show();
+        appState.currentScreen = 'found';
+        
+        // Get a random professional based on selected type
+        const profData = getRandomProfessional();
+        
+        $('#acceptedProfessional').html(`
+            <div class="professional-header">
+                <div class="professional-avatar">${profData.photo}</div>
+                <div class="professional-info">
+                    <div class="professional-name">${profData.name}</div>
+                    <div class="professional-category">${profData.category}</div>
+                    <div class="professional-rating">
+                        <i class="bi bi-star-fill"></i> ${profData.rating} (${profData.reviews} avaliações)
+                    </div>
+                </div>
+            </div>
+            <div class="professional-details">
+                <div class="detail-chip">
+                    <i class="bi bi-geo-alt"></i> ${profData.distance}
+                </div>
+                <div class="detail-chip">
+                    <i class="bi bi-cash"></i> R$${profData.pricePerHour}/h
+                </div>
+                <div class="detail-chip">
+                    <i class="bi bi-check-circle"></i> Verificado
+                </div>
+                ${profData.corEn ? `<div class="detail-chip"><i class="bi bi-shield-check"></i> COREN ${profData.corEn}</div>` : ''}
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-medium);">
+                <strong>Especialidades:</strong> ${profData.specialties.join(' • ')}
+            </div>
+            <div style="margin-top: 12px; background: #F0FDF4; border-radius: 12px; padding: 12px; text-align: center;">
+                <p style="margin: 0; font-weight: 600; color: #065F46;">
+                    <i class="bi bi-check-circle-fill"></i> Profissional a caminho
+                </p>
+                <p style="margin: 4px 0 0; font-size: 0.8rem; color: #047857;">
+                    Tempo estimado: ${Math.floor(Math.random() * 20 + 10)} minutos
+                </p>
+            </div>
+        `);
+        
+        // Show success toast
+        showToast(`${profData.name} aceitou sua solicitação!`, 'success');
+        
+        // Vibrate if supported
+        if (navigator.vibrate) {
+            navigator.vibrate([200, 100, 200]);
+        }
+    }
+
+    function getRandomProfessional() {
+        const professionals = {
+            tecnico: [
+                { name: 'Carlos Eduardo', category: 'Técnico de Enfermagem', rating: 4.9, reviews: 238, distance: '1.2 km', pricePerHour: 25, specialties: ['Curativos', 'Medicação', 'Plantão'], corEn: '123456-SP', photo: 'CE' },
+                { name: 'Roberto Lima', category: 'Técnico de Enfermagem', rating: 4.7, reviews: 89, distance: '0.8 km', pricePerHour: 25, specialties: ['Home Care', 'Idosos', 'Noturno'], corEn: '23456-SP', photo: 'RL' }
+            ],
+            cuidador: [
+                { name: 'Juliana Costa', category: 'Cuidadora de Idosos', rating: 4.8, reviews: 156, distance: '2.5 km', pricePerHour: 22, specialties: ['Alzheimer', 'Mobilidade', 'Banho'], corEn: null, photo: 'JC' }
+            ],
+            enfermeiro: [
+                { name: 'Dra. Amanda Reis', category: 'Enfermeira', rating: 5.0, reviews: 312, distance: '3.8 km', pricePerHour: 40, specialties: ['UTI', 'Curativos Complexos', 'Pós-cirúrgico'], corEn: '78901-SP', photo: 'AR' }
+            ]
+        };
+        
+        const list = professionals[appState.selectedServiceType] || professionals.tecnico;
+        return list[Math.floor(Math.random() * list.length)];
+    }
+
+    // Cancel Request
+    function cancelRequest() {
+        if (appState.requestTimer) {
+            clearTimeout(appState.requestTimer);
+            appState.requestTimer = null;
+        }
+        appState.isRequesting = false;
+        
+        showToast('Solicitação cancelada', 'info');
+        navigateTo('home');
+    }
+
+    function cancelAcceptedRequest() {
+        if (confirm('Tem certeza que deseja cancelar este atendimento?')) {
+            appState.professionalFound = false;
+            showToast('Atendimento cancelado. Taxa de cancelamento pode ser aplicada.', 'warning');
+            navigateTo('home');
+        }
+    }
+
+    // Contact Professional
+    function contactProfessional() {
+        showToast('Abrindo chat com o profissional...', 'info');
+        // In real app, open chat screen
+    }
+
+    function callProfessional() {
+        showToast('Chamada iniciada...', 'info');
+        // In real app, initiate VoIP call
+    }
+
+    // History
+    function showHistory() {
+        navigateTo('history');
+    }
+
+    // Other functions
+    function showAllServices() {
+        navigateTo('request');
+    }
+
+    function showNotifications() {
+        const modalHTML = `
+            <h5 style="font-weight: 700; margin-bottom: 16px;">
+                <i class="bi bi-bell-fill" style="color: var(--primary);"></i> Notificações
+            </h5>
+            <div style="padding: 16px; background: #F0FDF4; border-radius: 12px; margin-bottom: 10px;">
+                <p style="font-weight: 600; margin: 0;">Atendimento concluído</p>
+                <p style="font-size: 0.85rem; color: var(--text-medium); margin: 4px 0 0;">Carlos Eduardo - 15/05/2026</p>
+            </div>
+            <div style="padding: 16px; background: #EFF6FF; border-radius: 12px; margin-bottom: 10px;">
+                <p style="font-weight: 600; margin: 0;">Nova mensagem</p>
+                <p style="font-size: 0.85rem; color: var(--text-medium); margin: 4px 0 0;">Juliana Costa enviou uma mensagem</p>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary w-100 mt-2" onclick="closeModal()" style="border-radius: 20px;">Fechar</button>
+        `;
+        showModal(modalHTML);
+    }
+
+    function showProfile() {
+        showProfileModal();
+    }
+
+    function showProfileModal() {
+        const modalHTML = `
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; font-weight: 700;">MO</div>
+                <h5 style="font-weight: 700;">Maria Oliveira</h5>
+                <p style="color: var(--text-medium); font-size: 0.9rem;">maria@email.com</p>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action"><i class="bi bi-gear me-2"></i> Configurações</a>
+                <a href="#" class="list-group-item list-group-item-action"><i class="bi bi-credit-card me-2"></i> Formas de Pagamento</a>
+                <a href="#" class="list-group-item list-group-item-action"><i class="bi bi-people me-2"></i> Dependentes</a>
+                <a href="#" class="list-group-item list-group-item-action"><i class="bi bi-question-circle me-2"></i> Ajuda</a>
+                <a href="#" class="list-group-item list-group-item-action text-danger"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary w-100 mt-3" onclick="closeModal()" style="border-radius: 20px;">Fechar</button>
+        `;
+        showModal(modalHTML);
+    }
+
+    function enableLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    showToast('Localização ativada! Profissionais próximos carregados.', 'success');
+                    // Update nearby professionals section
+                    $('#nearbyProfessionals').html(`
+                        <div style="display: flex; gap: 10px; overflow-x: auto; padding: 10px 0;">
+                            <div style="min-width: 160px; background: white; border-radius: 16px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                                <div style="width: 45px; height: 45px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; margin-bottom: 8px;">CE</div>
+                                <p style="font-weight: 600; font-size: 0.85rem; margin: 0;">Carlos Eduardo</p>
+                                <p style="font-size: 0.75rem; color: var(--text-light); margin: 0;">Téc. Enfermagem</p>
+                                <p style="font-size: 0.75rem; color: var(--accent); margin: 0;">⭐ 4.9 • 1.2 km</p>
+                            </div>
+                            <div style="min-width: 160px; background: white; border-radius: 16px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                                <div style="width: 45px; height: 45px; border-radius: 50%; background: var(--secondary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; margin-bottom: 8px;">JC</div>
+                                <p style="font-weight: 600; font-size: 0.85rem; margin: 0;">Juliana Costa</p>
+                                <p style="font-size: 0.75rem; color: var(--text-light); margin: 0;">Cuidadora</p>
+                                <p style="font-size: 0.75rem; color: var(--accent); margin: 0;">⭐ 4.8 • 2.5 km</p>
+                            </div>
+                        </div>
+                    `);
+                },
+                function(error) {
+                    showToast('Erro ao obter localização. Verifique as permissões.', 'danger');
+                }
+            );
+        } else {
+            showToast('Geolocalização não suportada pelo navegador.', 'danger');
+        }
+    }
+
+    // Modal Functions
+    function showModal(content) {
+        $('#modalContent').html(content);
+        $('#modalOverlay').addClass('active');
+    }
+
+    function closeModal() {
+        $('#modalOverlay').removeClass('active');
+    }
+
+    $('#modalOverlay').on('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+
+    // Toast Notification
+    function showToast(message, type = 'info') {
+        const colors = {
+            success: '#10B981',
+            warning: '#F59E0B',
+            danger: '#EF4444',
+            info: '#0891B2'
+        };
+        
+        const toastHTML = `
+            <div class="toast align-items-center text-white border-0" role="alert" 
+                 style="background: ${colors[type]}; min-width: 280px; margin-bottom: 8px;">
+                <div class="d-flex">
+                    <div class="toast-body" style="font-weight: 500;">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        
+        // Create toast container if not exists
+        if ($('.toast-container').length === 0) {
+            $('body').append('<div class="toast-container"></div>');
+        }
+        
+        const $toast = $(toastHTML).appendTo('.toast-container');
+        const toast = new bootstrap.Toast($toast[0], { delay: 3000 });
+        toast.show();
+        
+        // Remove after hidden
+        $toast.on('hidden.bs.toast', function() {
+            $(this).remove();
+        });
+    }
+
+    // Keyboard shortcuts
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (appState.isRequesting) {
+                cancelRequest();
+            } else if ($('#modalOverlay').hasClass('active')) {
+                closeModal();
+            } else if (appState.currentScreen !== 'home') {
+                navigateTo('home');
+            }
+        }
+    });
+
+    // Initial load
+    console.log('CareLink App - Cliente v1.0');
+    console.log('🩺 Conectando você aos melhores profissionais de saúde');
+</script>
+
+</body>
+</html>

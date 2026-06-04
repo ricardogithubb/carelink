@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CareLink - Encontre Profissionais de Saúde</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0891B2;
+            --primary-dark: #0E7490;
+            --primary-light: #06B6D4;
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --danger: #EF4444;
+            --bg-light: #F0FDFA;
+            --bg-white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-medium: #475569;
+            --text-light: #64748B;
+            --border: #E2E8F0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #F8FAFC;
+            color: var(--text-dark);
+            height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* App Container */
+        .app-container {
+            max-width: 430px;
+            margin: 0 auto;
+            height: 100vh;
+            background: var(--bg-white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        @media (min-width: 431px) {
+            body {
+                background: linear-gradient(135deg, #0891B2 0%, #0E7490 50%, #06B6D4 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+            .app-container {
+                border-radius: 28px;
+                height: 92vh;
+                max-height: 900px;
+            }
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 16px 20px;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-logo i {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            height: calc(100vh - 140px);
+            overflow-y: auto;
+            padding: 20px;
+            scroll-behavior: smooth;
+        }
+
+        @media (min-width: 431px) {
+            .main-content {
+                height: calc(92vh - 200px);
+                max-height: 700px;
+            }
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            margin-bottom: 24px;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-medium);
+            font-weight: 400;
+        }
+
+        /* Main CTA Button */
+        .main-cta {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 28px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .main-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .main-cta i {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .main-cta h3 {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .main-cta p {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.85rem;
+            margin: 5px 0 0;
+        }
+
+        /* Service Type Cards */
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .service-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .service-type-card {
+            background: var(--bg-white);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .service-type-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .service-type-card.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(8, 145, 178, 0.05) 0%, rgba(6, 182, 212, 0.1) 100%);
+            box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.2);
+        }
+
+        .service-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .service-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+
+        .service-price {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* Professional Cards */
+        .professional-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .professional-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .professional-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            transform: translateX(4px);
+        }
+
+        .professional-avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .professional-info {
+            flex: 1;
+        }
+
+        .professional-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .professional-category {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .professional-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .professional-price {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .badge-available {
+            background: #D1FAE5;
+            color: #065F46;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form Styles */
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-label i {
+            color: var(--primary);
+        }
+
+        .form-select, .form-control {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            margin-bottom: 16px;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.15);
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: var(--radius-xl);
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(8, 145, 178, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 12px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: sticky;
+            bottom: 0;
+            background: var(--bg-white);
+            border-top: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+            border: none;
+            background: none;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .nav-item i {
+            font-size: 1.4rem;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .pulse-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            margin: 0 auto 20px;
+            animation: pulse 2s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(8, 145, 178, 0.5);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 0 20px rgba(8, 145, 178, 0);
+                transform: scale(1.05);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(8, 145, 178, 0);
+                transform: scale(1);
+            }
+        }
+
+        .searching-dots::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        .main-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="header-logo">
+                <i class="bi bi-heart-pulse-fill"></i>
+                CareLink
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" onclick="showNotifications()">
+                    <i class="bi bi-bell-fill"></i>
+                    <span class="notification-badge"></span>
+                </button>
+                <button class="header-btn" onclick="showProfile()">
+                    <i class="bi bi-person-fill"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- HOME SCREEN -->
+        <div id="homeScreen">
+            <div class="welcome-section">
+                <h1 class="welcome-title">Olá, Maria 👋</h1>
+                <p class="welcome-subtitle">Encontre um profissional de saúde agora</p>
+            </div>
+
+            <!-- MAIN CTA - Botão principal -->
+            <div class="main-cta" onclick="openRequestModal()">
+                <i class="bi bi-plus-circle-fill"></i>
+                <h3>Nova Solicitação</h3>
+                <p>Encontre um profissional em minutos</p>
+            </div>
+
+            <!-- Professional Type Selection -->
+            <h3 class="section-title">
+                <span><i class="bi bi-funnel"></i> Filtrar por tipo</span>
+                <span style="font-size: 0.7rem; color: var(--text-light);">selecione para ver profissionais</span>
+            </h3>
+            <div class="service-types" id="serviceTypes">
+                <div class="service-type-card selected" onclick="filterProfessionals('all')" data-type="all">
+                    <div class="service-icon">👨‍⚕️</div>
+                    <div class="service-name">Todos</div>
+                </div>
+                <div class="service-type-card" onclick="filterProfessionals('tecnico')" data-type="tecnico">
+                    <div class="service-icon">💉</div>
+                    <div class="service-name">Técnico Enfermagem</div>
+                    <div class="service-price">a partir R$25/h</div>
+                </div>
+                <div class="service-type-card" onclick="filterProfessionals('cuidador')" data-type="cuidador">
+                    <div class="service-icon">🤲</div>
+                    <div class="service-name">Cuidador</div>
+                    <div class="service-price">a partir R$22/h</div>
+                </div>
+                <div class="service-type-card" onclick="filterProfessionals('enfermeiro')" data-type="enfermeiro">
+                    <div class="service-icon">🏥</div>
+                    <div class="service-name">Enfermeiro(a)</div>
+                    <div class="service-price">a partir R$40/h</div>
+                </div>
+            </div>
+
+            <!-- Professionals List -->
+            <h3 class="section-title">
+                <span><i class="bi bi-star-fill" style="color: var(--accent);"></i> Profissionais Disponíveis</span>
+                <span style="font-size: 0.7rem; color: var(--primary);" onclick="enableLocation()">
+                    <i class="bi bi-geo-alt"></i> perto de mim
+                </span>
+            </h3>
+            <div class="professional-list" id="professionalsList">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- REQUEST FORM MODAL (hidden by default) -->
+        <div class="modal-overlay" id="requestModal">
+            <div class="modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h4 style="font-weight: 700; margin: 0;">Nova Solicitação</h4>
+                    <button class="btn-close" onclick="closeRequestModal()"></button>
+                </div>
+
+                <div id="selectedProfessionalInfo" class="mb-3" style="background: #F0FDF4; border-radius: 12px; padding: 12px; display: none;">
+                    <!-- Selected professional will appear here -->
+                </div>
+
+                <label class="form-label"><i class="bi bi-person-badge"></i> Tipo de Serviço</label>
+                <select class="form-select" id="serviceCategory">
+                    <option value="">Selecione o tipo de atendimento</option>
+                    <option value="acompanhamento_consulta">Acompanhamento em Consulta</option>
+                    <option value="acompanhante_hospitalar">Acompanhante Hospitalar</option>
+                    <option value="plantao_domiciliar">Plantão Domiciliar</option>
+                    <option value="curativos">Curativos / Medicação</option>
+                    <option value="cuidados_diarios">Cuidados Diários</option>
+                    <option value="pernoite">Pernoite (22h às 6h)</option>
+                </select>
+
+                <label class="form-label"><i class="bi bi-people-fill"></i> Paciente</label>
+                <select class="form-select" id="patientSelect">
+                    <option value="self">Eu mesmo(a)</option>
+                    <option value="joao">João Silva (Pai, 78 anos)</option>
+                    <option value="ana">Ana Oliveira (Mãe, 72 anos)</option>
+                </select>
+
+                <label class="form-label"><i class="bi bi-calendar-event"></i> Data</label>
+                <input type="date" class="form-control" id="serviceDate" value="2026-06-05">
+
+                <label class="form-label"><i class="bi bi-clock"></i> Horário</label>
+                <input type="time" class="form-control" id="serviceTime" value="09:00">
+
+                <label class="form-label"><i class="bi bi-hourglass-split"></i> Duração</label>
+                <select class="form-select" id="serviceDuration">
+                    <option value="2">2 horas</option>
+                    <option value="4" selected>4 horas</option>
+                    <option value="6">6 horas</option>
+                    <option value="8">8 horas</option>
+                    <option value="12">12 horas</option>
+                </select>
+
+                <label class="form-label"><i class="bi bi-geo-alt-fill"></i> Endereço</label>
+                <input type="text" class="form-control" id="serviceAddress" value="Rua das Flores, 123 - São Paulo/SP">
+
+                <label class="form-label"><i class="bi bi-chat-square-text"></i> Observações</label>
+                <textarea class="form-control" id="serviceNotes" rows="2" placeholder="Informações importantes..."></textarea>
+
+                <div class="mt-3" style="background: #F0FDFA; border-radius: 12px; padding: 12px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="font-weight: 600;">Valor Estimado</span>
+                        <span style="font-size: 1.3rem; font-weight: 700; color: var(--primary);">R$ <span id="estimatedPrice">100,00</span></span>
+                    </div>
+                </div>
+
+                <button class="btn-primary-custom mt-3" onclick="confirmRequest()">
+                    <i class="bi bi-check-circle"></i> Confirmar e Buscar
+                </button>
+            </div>
+        </div>
+
+        <!-- SEARCHING SCREEN -->
+        <div id="searchingScreen" style="display: none; text-align: center; padding: 40px 20px;">
+            <div class="pulse-circle">
+                <i class="bi bi-search" style="font-size: 2.5rem; color: white;"></i>
+            </div>
+            <p class="searching-text" style="font-size: 1.1rem; font-weight: 600;">Buscando profissional<span class="searching-dots"></span></p>
+            <p style="color: var(--text-medium);">Aguardando confirmação</p>
+            <button class="btn-outline mt-4" onclick="cancelSearch()" style="padding: 10px 30px; border-radius: 25px;">
+                Cancelar
+            </button>
+        </div>
+
+        <!-- CONFIRMATION SCREEN -->
+        <div id="confirmationScreen" style="display: none;">
+            <div style="background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border-radius: var(--radius-md); padding: 20px; text-align: center; margin-bottom: 20px;">
+                <i class="bi bi-check-circle-fill" style="font-size: 2.5rem; color: var(--secondary);"></i>
+                <h4 style="margin-top: 10px; color: #065F46;">Profissional Confirmado!</h4>
+            </div>
+            <div id="confirmedProfessional"></div>
+            <div style="display: flex; gap: 10px; margin-top: 16px;">
+                <button class="btn-outline" style="flex: 1;" onclick="contactProfessional()"><i class="bi bi-chat-dots"></i> Chat</button>
+                <button class="btn-outline" style="flex: 1;" onclick="callProfessional()"><i class="bi bi-telephone"></i> Ligar</button>
+            </div>
+            <button class="btn-outline mt-3 w-100" onclick="finishAndReturn()" style="border-color: var(--danger); color: var(--danger);">
+                Cancelar Atendimento
+            </button>
+        </div>
+
+        <!-- HISTORY SCREEN -->
+        <div id="historyScreen" style="display: none;">
+            <button class="btn-outline mb-3" onclick="goBackToHome()" style="padding: 8px 16px; border-radius: 20px;">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </button>
+            <h2 class="welcome-title mb-4">Histórico</h2>
+            <div class="professional-list">
+                <div class="professional-card" style="cursor: default;">
+                    <div class="professional-avatar">💉</div>
+                    <div class="professional-info">
+                        <div class="professional-name">Carlos Eduardo</div>
+                        <div class="professional-category">Técnico Enfermagem • 4h</div>
+                        <div style="font-size: 0.7rem; color: var(--text-light);">15/05/2026</div>
+                    </div>
+                    <div class="professional-price">R$100</div>
+                </div>
+                <div class="professional-card" style="cursor: default;">
+                    <div class="professional-avatar">🤲</div>
+                    <div class="professional-info">
+                        <div class="professional-name">Juliana Costa</div>
+                        <div class="professional-category">Cuidadora • Acompanhamento</div>
+                        <div style="font-size: 0.7rem; color: var(--text-light);">10/05/2026</div>
+                    </div>
+                    <div class="professional-price">R$180</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="showScreen('home')">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Início</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('history')">
+            <i class="bi bi-clock-history"></i>
+            <span>Histórico</span>
+        </button>
+        <button class="nav-item" onclick="showProfile()">
+            <i class="bi bi-person-fill"></i>
+            <span>Perfil</span>
+        </button>
+    </nav>
+
+    <!-- Profile Modal -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-content">
+            <div style="text-align: center;">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">MO</div>
+                <h5>Maria Oliveira</h5>
+                <p class="text-muted">maria@email.com</p>
+                <hr>
+                <button class="btn-outline w-100 mb-2" onclick="closeProfileModal()" style="border-color: var(--primary); color: var(--primary);">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    let currentFilter = 'all';
+    let selectedProfessional = null;
+    let searchTimeout = null;
+    let currentScreen = 'home';
+
+    const professionals = [
+        { id: 1, name: 'Carlos Eduardo', type: 'tecnico', category: 'Técnico de Enfermagem', rating: 4.9, reviews: 238, price: 25, distance: '1.2 km', avatar: 'CE', available: true, specialties: 'Curativos, Medicação' },
+        { id: 2, name: 'Juliana Costa', type: 'cuidador', category: 'Cuidadora de Idosos', rating: 4.8, reviews: 156, price: 22, distance: '2.5 km', avatar: 'JC', available: true, specialties: 'Alzheimer, Mobilidade' },
+        { id: 3, name: 'Dra. Amanda Reis', type: 'enfermeiro', category: 'Enfermeira', rating: 5.0, reviews: 312, price: 40, distance: '3.8 km', avatar: 'AR', available: true, specialties: 'UTI, Curativos' },
+        { id: 4, name: 'Roberto Lima', type: 'tecnico', category: 'Técnico de Enfermagem', rating: 4.7, reviews: 89, price: 25, distance: '0.8 km', avatar: 'RL', available: true, specialties: 'Home Care, Noturno' }
+    ];
+
+    function renderProfessionals() {
+        let filtered = professionals;
+        if (currentFilter !== 'all') {
+            filtered = professionals.filter(p => p.type === currentFilter);
+        }
+        
+        const html = filtered.map(prof => `
+            <div class="professional-card" onclick="selectAndRequest('${prof.name}', ${prof.id})">
+                <div class="professional-avatar">${prof.avatar}</div>
+                <div class="professional-info">
+                    <div class="professional-name">${prof.name}</div>
+                    <div class="professional-category">${prof.category}</div>
+                    <div class="professional-rating">
+                        <i class="bi bi-star-fill"></i> ${prof.rating} (${prof.reviews} reviews)
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="professional-price">R$${prof.price}/h</div>
+                    <div class="badge-available mt-1">${prof.distance}</div>
+                </div>
+            </div>
+        `).join('');
+        
+        $('#professionalsList').html(html || '<p style="text-align: center; color: var(--text-light);">Nenhum profissional encontrado</p>');
+    }
+
+    function filterProfessionals(type) {
+        currentFilter = type;
+        $('.service-type-card').removeClass('selected');
+        $(`.service-type-card[data-type="${type}"]`).addClass('selected');
+        renderProfessionals();
+    }
+
+    function selectAndRequest(profName, profId) {
+        selectedProfessional = professionals.find(p => p.id === profId);
+        
+        // Show modal with professional info
+        $('#selectedProfessionalInfo').html(`
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 45px; height: 45px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">${selectedProfessional.avatar}</div>
+                <div>
+                    <strong>${selectedProfessional.name}</strong><br>
+                    <small style="color: var(--text-medium);">${selectedProfessional.category} • ${selectedProfessional.price}/h</small>
+                </div>
+            </div>
+        `).show();
+        
+        updatePriceEstimate();
+        $('#requestModal').addClass('active');
+    }
+
+    function openRequestModal() {
+        selectedProfessional = null;
+        $('#selectedProfessionalInfo').hide();
+        updatePriceEstimate();
+        $('#requestModal').addClass('active');
+    }
+
+    function closeRequestModal() {
+        $('#requestModal').removeClass('active');
+    }
+
+    function updatePriceEstimate() {
+        let baseRate = 25;
+        if (selectedProfessional) {
+            baseRate = selectedProfessional.price;
+        }
+        const duration = parseInt($('#serviceDuration').val()) || 4;
+        const total = baseRate * duration;
+        $('#estimatedPrice').text(total.toFixed(2).replace('.', ','));
+    }
+
+    function confirmRequest() {
+        const category = $('#serviceCategory').val();
+        if (!category) {
+            alert('Por favor, selecione o tipo de serviço');
+            return;
+        }
+        
+        closeRequestModal();
+        
+        // Show searching screen
+        $('.main-content > div').hide();
+        $('#searchingScreen').show();
+        currentScreen = 'searching';
+        
+        // Simulate search
+        searchTimeout = setTimeout(() => {
+            showConfirmation();
+        }, 2500);
+    }
+
+    function showConfirmation() {
+        clearTimeout(searchTimeout);
+        
+        const professional = selectedProfessional || professionals[0];
+        
+        $('#confirmedProfessional').html(`
+            <div class="professional-card" style="border: 2px solid var(--secondary);">
+                <div class="professional-avatar">${professional.avatar}</div>
+                <div class="professional-info">
+                    <div class="professional-name">${professional.name}</div>
+                    <div class="professional-category">${professional.category}</div>
+                    <div class="professional-rating">
+                        <i class="bi bi-star-fill"></i> ${professional.rating}
+                    </div>
+                </div>
+                <div class="professional-price">R$${professional.price}/h</div>
+            </div>
+            <div style="margin-top: 12px; background: #F0FDF4; border-radius: 12px; padding: 12px; text-align: center;">
+                <i class="bi bi-check-circle-fill" style="color: var(--secondary);"></i>
+                <span style="font-weight: 500;"> Profissional a caminho</span>
+                <p style="font-size: 0.75rem; margin: 5px 0 0;">Tempo estimado: 15 minutos</p>
+            </div>
+        `);
+        
+        $('#searchingScreen').hide();
+        $('#confirmationScreen').show();
+        currentScreen = 'confirmation';
+        
+        showToast(`${professional.name} aceitou sua solicitação!`, 'success');
+        
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    }
+
+    function cancelSearch() {
+        if (searchTimeout) clearTimeout(searchTimeout);
+        showToast('Solicitação cancelada', 'info');
+        showScreen('home');
+    }
+
+    function finishAndReturn() {
+        if (confirm('Cancelar este atendimento?')) {
+            showScreen('home');
+        }
+    }
+
+    function contactProfessional() {
+        showToast('Abrindo chat...', 'info');
+    }
+
+    function callProfessional() {
+        showToast('Chamando profissional...', 'info');
+    }
+
+    function showScreen(screen) {
+        clearTimeout(searchTimeout);
+        
+        $('#homeScreen, #searchingScreen, #confirmationScreen, #historyScreen').hide();
+        
+        if (screen === 'home') {
+            $('#homeScreen').show();
+            currentScreen = 'home';
+            renderProfessionals();
+        } else if (screen === 'history') {
+            $('#historyScreen').show();
+            currentScreen = 'history';
+        }
+        
+        $('.nav-item').removeClass('active');
+        if (screen === 'home') $('.nav-item').eq(0).addClass('active');
+        else if (screen === 'history') $('.nav-item').eq(1).addClass('active');
+    }
+
+    function goBackToHome() {
+        showScreen('home');
+    }
+
+    function showNotifications() {
+        alert('🔔 Notificações\n\n• Atendimento concluído - 15/05\n• Nova mensagem de Juliana');
+    }
+
+    function showProfile() {
+        $('#profileModal').addClass('active');
+    }
+
+    function closeProfileModal() {
+        $('#profileModal').removeClass('active');
+    }
+
+    function enableLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                () => showToast('Localização ativada!', 'success'),
+                () => showToast('Erro ao obter localização', 'danger')
+            );
+        } else {
+            showToast('Geolocalização não suportada', 'danger');
+        }
+    }
+
+    function showToast(message, type) {
+        const colors = { success: '#10B981', warning: '#F59E0B', danger: '#EF4444', info: '#0891B2' };
+        
+        if ($('.toast-container').length === 0) {
+            $('body').append('<div class="toast-container"></div>');
+        }
+        
+        const toastHTML = `
+            <div class="toast align-items-center text-white border-0" role="alert" style="background: ${colors[type]}; margin-bottom: 8px; min-width: 250px;">
+                <div class="d-flex">
+                    <div class="toast-body" style="font-weight: 500;">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        
+        const $toast = $(toastHTML).appendTo('.toast-container');
+        setTimeout(() => $toast.remove(), 3000);
+    }
+
+    // Initialize
+    renderProfessionals();
+    $('#serviceDuration, #serviceCategory').on('change', updatePriceEstimate);
+    
+    // Close modals on overlay click
+    $('.modal-overlay').on('click', function(e) {
+        if (e.target === this) {
+            $(this).removeClass('active');
+        }
+    });
+</script>
+
+</body>
+</html>

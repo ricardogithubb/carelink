@@ -443,7 +443,8 @@ $(document).on('input', '#regPhone', function () {
 const appState = {
     currentScreen: 'home',
     selectedServiceType: 'tecnico',
-    selectedPeriod: 'data_especifica',
+    selectedPeriod: 'imediato',
+    tipoContratacao: 'imediato',
     isRequesting: false,
     requestTimer: null,
     trackingTimers: [],
@@ -488,7 +489,7 @@ function setupEventListeners() {
 
 function navigateTo(screen) {
     const screens = ['homeScreen', 'requestScreen', 'searchingScreen',
-        'foundScreen', 'historyScreen', 'ratingScreen'];
+        'foundScreen', 'scheduledScreen', 'historyScreen', 'ratingScreen'];
     screens.forEach(id => $('#' + id).hide());
 
     appState.isRequesting = false;
@@ -540,15 +541,23 @@ function selectPeriod(el, period) {
     $('.period-option').removeClass('selected');
     $(el).addClass('selected');
     appState.selectedPeriod = period;
+    appState.tipoContratacao = period;
 
-    if (period === 'agora') {
-        const now = new Date();
-        $('#serviceDate').val(now.toISOString().split('T')[0]);
-        $('#serviceTime').val(now.toTimeString().slice(0, 5));
+    if (period === 'imediato') {
         $('#dateTimeFields').slideUp(300);
+        $('#submitRequestBtn').html('<i class="bi bi-lightning-charge-fill me-2"></i>Buscar Profissional');
     } else {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowStr = tomorrow.toISOString().split('T')[0];
+        $('#serviceDate').attr('min', tomorrowStr);
+        if (!$('#serviceDate').val() || $('#serviceDate').val() < tomorrowStr) {
+            $('#serviceDate').val(tomorrowStr);
+        }
         $('#dateTimeFields').slideDown(300);
+        $('#submitRequestBtn').html('<i class="bi bi-calendar-check me-2"></i>Confirmar Agendamento');
     }
+    updatePriceEstimate();
 }
 
 // ── Price Estimation ──────────────────────────────────────────
@@ -591,30 +600,48 @@ function submitRequest() {
         return;
     }
 
+    const isImediato = appState.tipoContratacao === 'imediato';
+
+    if (!isImediato) {
+        const date = $('#serviceDate').val();
+        const time = $('#serviceTime').val();
+        if (!date || !time) {
+            showToast('Informe a data e horário do agendamento', 'warning');
+            return;
+        }
+        const selectedDate = new Date(date + 'T' + time);
+        if (selectedDate <= new Date()) {
+            showToast('Selecione uma data e horário futuros', 'warning');
+            return;
+        }
+    }
+
+    const now = new Date();
     saveRequest({
+        tipo: appState.tipoContratacao,
         serviceType: category,
         patient: $('#patientSelect').val(),
-        date: $('#serviceDate').val(),
-        time: $('#serviceTime').val(),
+        date: isImediato ? now.toISOString().split('T')[0] : $('#serviceDate').val(),
+        time: isImediato ? now.toTimeString().slice(0, 5) : $('#serviceTime').val(),
         duration: $('#serviceDuration').val(),
         address,
         notes: $('#serviceNotes').val(),
         price: $('#estimatedPrice').text()
     });
 
-    // Show searching screen
-    $('.nav-item').removeClass('active');
-    $('#requestScreen').hide();
-    $('#searchingScreen').show();
-    appState.currentScreen = 'searching';
-    appState.isRequesting = true;
-    $('#mainContent').scrollTop(0);
+    if (isImediato) {
+        $('.nav-item').removeClass('active');
+        $('#requestScreen').hide();
+        $('#searchingScreen').show();
+        appState.currentScreen = 'searching';
+        appState.isRequesting = true;
+        $('#mainContent').scrollTop(0);
 
-    // Animate notified statuses
-    setTimeout(() => animateNotified(), 800);
-
-    // Simulate professional accepting (2–4 s)
-    appState.requestTimer = setTimeout(professionalAccepted, 2500 + Math.random() * 1500);
+        setTimeout(() => animateNotified(), 800);
+        appState.requestTimer = setTimeout(professionalAccepted, 2500 + Math.random() * 1500);
+    } else {
+        showScheduledConfirmation();
+    }
 }
 
 function animateNotified() {
@@ -647,7 +674,7 @@ function professionalAccepted() {
         $('#mainContent').scrollTop(0);
 
         renderProfessionalCard(prof);
-        startEtaCountdown(Math.floor(Math.random() * 15 + 8));
+        startEtaCountdown(etaFromDistance(prof.distance));
         startTrackingSimulation();
 
         // Show active service banner on home
@@ -863,6 +890,76 @@ function getRandomProfessional() {
     return list[Math.floor(Math.random() * list.length)];
 }
 
+function etaFromDistance(distStr) {
+    const km = parseFloat((distStr || '2 km').replace(',', '.'));
+    return Math.max(3, Math.round(km * 4));
+}
+
+function showScheduledConfirmation() {
+    const date = $('#serviceDate').val();
+    const time = $('#serviceTime').val();
+    const duration = parseInt($('#serviceDuration').val()) || 4;
+    const price = $('#estimatedPrice').text();
+    const category = $('#serviceCategory').val();
+    const prof = getRandomProfessional();
+    appState.currentProfessional = prof;
+
+    const [y, m, d] = date.split('-');
+    const endH = parseInt(time.split(':')[0]) + duration;
+    const endTime = `${String(endH % 24).padStart(2, '0')}:${time.split(':')[1]}`;
+
+    const categoryLabels = {
+        acompanhamento_consulta: 'Acompanhamento em Consulta',
+        acompanhante_hospitalar: 'Acompanhante Hospitalar',
+        plantao_domiciliar: 'Plantão Domiciliar',
+        curativos: 'Curativos / Medicação',
+        cuidados_diarios: 'Cuidados Diários',
+        pernoite: 'Pernoite'
+    };
+
+    $('#scheduledDate').text(`${d}/${m}/${y}`);
+    $('#scheduledTime').text(`${time} — ${endTime}`);
+    $('#scheduledProfName').text(prof.name);
+    $('#scheduledProfAvatar').text(prof.photo);
+    $('#scheduledProfCategory').text(prof.category);
+    $('#scheduledService').text(categoryLabels[category] || category);
+    $('#scheduledDuration').text(`${duration}h`);
+    $('#scheduledPrice').text(`R$ ${price}`);
+
+    $('#requestScreen').hide();
+    $('#scheduledScreen').show();
+    appState.currentScreen = 'scheduled';
+    $('.nav-item').removeClass('active');
+    $('#mainContent').scrollTop(0);
+
+    $('#activeProfName').text(prof.name + ' — Agendado');
+    $('#activeServiceBanner').show();
+
+    showToast('Agendamento confirmado com sucesso!', 'success');
+}
+
+function cancelScheduled() {
+    showModal(`
+        <div style="width:36px;height:4px;background:#E2E8F0;border-radius:4px;margin:0 auto 20px;"></div>
+        <h5 style="font-weight:700;margin-bottom:12px;">Cancelar agendamento?</h5>
+        <p style="color:var(--text-medium);font-size:0.9rem;margin-bottom:20px;">
+            Você tem certeza que deseja cancelar este agendamento?
+        </p>
+        <div style="display:flex;gap:10px;">
+            <button class="btn btn-outline-secondary flex-grow-1" onclick="closeModal()" style="border-radius:20px;">Manter</button>
+            <button class="btn btn-danger flex-grow-1" onclick="confirmCancelScheduled()" style="border-radius:20px;">Cancelar</button>
+        </div>
+    `);
+}
+
+function confirmCancelScheduled() {
+    closeModal();
+    appState.currentProfessional = null;
+    $('#activeServiceBanner').hide();
+    showToast('Agendamento cancelado', 'warning');
+    navigateTo('home');
+}
+
 // ── Misc Actions ──────────────────────────────────────────────
 
 function showHistory() { navigateTo('history'); }
@@ -871,9 +968,15 @@ function showProfile() { showProfileModal(); }
 
 function showActiveService() {
     if (appState.currentProfessional) {
-        $('#foundScreen').show();
-        $('#homeScreen').hide();
-        appState.currentScreen = 'found';
+        if (appState.tipoContratacao === 'programado') {
+            $('#scheduledScreen').show();
+            $('#homeScreen').hide();
+            appState.currentScreen = 'scheduled';
+        } else {
+            $('#foundScreen').show();
+            $('#homeScreen').hide();
+            appState.currentScreen = 'found';
+        }
     }
 }
 

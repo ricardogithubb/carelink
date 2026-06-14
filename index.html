@@ -592,20 +592,22 @@
                 </select>
 
                 <label class="form-label">
-                    <i class="bi bi-clock-fill"></i> Quando?
+                    <i class="bi bi-clock-fill"></i> Tipo de Contratação
                 </label>
                 <div class="period-selector mb-3">
-                    <div class="period-option selected" onclick="selectPeriod(this,'data_especifica')">
-                        <div class="period-icon">📅</div>
-                        <div class="period-name">Data Específica</div>
-                    </div>
-                    <div class="period-option" onclick="selectPeriod(this,'agora')">
+                    <div class="period-option selected" onclick="selectPeriod(this,'imediato')">
                         <div class="period-icon">⚡</div>
-                        <div class="period-name">O mais breve</div>
+                        <div class="period-name">Imediato</div>
+                        <div class="period-desc">Profissional vem agora</div>
+                    </div>
+                    <div class="period-option" onclick="selectPeriod(this,'programado')">
+                        <div class="period-icon">📅</div>
+                        <div class="period-name">Programado</div>
+                        <div class="period-desc">Agendar para outra data</div>
                     </div>
                 </div>
 
-                <div id="dateTimeFields">
+                <div id="dateTimeFields" style="display:none;">
                     <label class="form-label"><i class="bi bi-calendar-event"></i> Data</label>
                     <input type="date" class="form-control mb-3" id="serviceDate" min="2026-06-01" value="2026-06-12">
 
@@ -644,8 +646,8 @@
                 </div>
             </div>
 
-            <button class="btn-primary-custom" onclick="submitRequest()">
-                <i class="bi bi-search me-2"></i>Buscar Profissional
+            <button class="btn-primary-custom" id="submitRequestBtn" onclick="submitRequest()">
+                <i class="bi bi-lightning-charge-fill me-2"></i>Buscar Profissional
             </button>
         </div>
 
@@ -762,6 +764,81 @@
             <button class="btn btn-outline-success w-100 mt-3" onclick="completeService()" style="border-radius:20px;">
                 <i class="bi bi-check2-circle me-2"></i>Simular Conclusão do Atendimento
             </button>
+        </div>
+
+        <!-- ===== SCHEDULED SCREEN ===== -->
+        <div id="scheduledScreen" style="display:none;">
+            <div class="screen-header">
+                <button class="back-btn" onclick="cancelScheduled()">
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+                <h2 class="screen-title">Agendamento</h2>
+            </div>
+
+            <div class="scheduled-container">
+                <div class="scheduled-success-icon">
+                    <i class="bi bi-calendar-check-fill"></i>
+                </div>
+                <h2 class="scheduled-title">Agendado com Sucesso!</h2>
+                <p class="scheduled-subtitle">Seu atendimento está confirmado</p>
+
+                <div class="scheduled-datetime-card">
+                    <div class="scheduled-datetime-row">
+                        <i class="bi bi-calendar-event-fill"></i>
+                        <div>
+                            <p class="scheduled-dt-label">Data</p>
+                            <p class="scheduled-dt-value" id="scheduledDate">—</p>
+                        </div>
+                    </div>
+                    <div class="scheduled-datetime-divider"></div>
+                    <div class="scheduled-datetime-row">
+                        <i class="bi bi-clock-fill"></i>
+                        <div>
+                            <p class="scheduled-dt-label">Horário</p>
+                            <p class="scheduled-dt-value" id="scheduledTime">—</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scheduled-prof-card">
+                    <p class="scheduled-section-label">Profissional Designado</p>
+                    <div class="scheduled-prof-row">
+                        <div class="scheduled-prof-avatar" id="scheduledProfAvatar">CE</div>
+                        <div class="scheduled-prof-info">
+                            <p class="scheduled-prof-name" id="scheduledProfName">—</p>
+                            <p class="scheduled-prof-category" id="scheduledProfCategory">—</p>
+                        </div>
+                        <div class="scheduled-prof-badge">Confirmado</div>
+                    </div>
+                </div>
+
+                <div class="scheduled-details-card">
+                    <div class="scheduled-detail-row">
+                        <span class="scheduled-detail-label"><i class="bi bi-briefcase-fill"></i> Serviço</span>
+                        <span class="scheduled-detail-value" id="scheduledService">—</span>
+                    </div>
+                    <div class="scheduled-detail-row">
+                        <span class="scheduled-detail-label"><i class="bi bi-hourglass-split"></i> Duração</span>
+                        <span class="scheduled-detail-value" id="scheduledDuration">—</span>
+                    </div>
+                    <div class="scheduled-detail-row">
+                        <span class="scheduled-detail-label"><i class="bi bi-cash"></i> Valor estimado</span>
+                        <span class="scheduled-detail-value" id="scheduledPrice">—</span>
+                    </div>
+                </div>
+
+                <div class="scheduled-info-note">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <span>O profissional entrará em contato antes do atendimento. O pagamento é realizado diretamente após o serviço.</span>
+                </div>
+
+                <button class="btn-primary-custom" onclick="navigateTo('home')" style="margin:0 0 12px;">
+                    <i class="bi bi-house-fill me-2"></i>Voltar ao Início
+                </button>
+                <button class="btn btn-outline-danger w-100" onclick="cancelScheduled()" style="border-radius:20px;padding:12px;">
+                    <i class="bi bi-x-circle me-2"></i>Cancelar Agendamento
+                </button>
+            </div>
         </div>
 
         <!-- ===== RATING SCREEN ===== -->
